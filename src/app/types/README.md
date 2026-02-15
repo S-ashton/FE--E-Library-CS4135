@@ -1,0 +1,1 @@
+## Folder where we will declare all our of types 
