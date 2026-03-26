@@ -1,7 +1,7 @@
 import { Link, Outlet, NavLink } from "react-router-dom";
 
 export default function AppLayout() {
-  const linkStyle = ({ isActive }) => ({
+  const linkStyle = ({ isActive }: { isActive: boolean }) => ({
     textDecoration: "none",
     fontWeight: isActive ? 700 : 400,
   });
