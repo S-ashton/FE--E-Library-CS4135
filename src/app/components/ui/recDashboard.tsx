@@ -84,9 +84,9 @@ export default function recDashboard({
           }}
         >
           <p style={{ margin: 0, color: "#6b7280", fontSize: "0.9rem" }}>
-            API Status
+            Nice Box Title
           </p>
-          <p style={{ margin: "8px 0 0", fontWeight: 700 }}>Not connected</p>
+          <p style={{ margin: "8px 0 0", fontWeight: 700 }}>This is a nice box to be used for something</p>
         </div>
 
         <div
@@ -132,7 +132,7 @@ export default function recDashboard({
             color: "#475569",
           }}
         >
-          Recommended books will appear here in cards once the API is wired up.
+          Recommended books will appear here in cards API is integrated. For now this is a placeholder.
         </p>
       </div>
     </section>
