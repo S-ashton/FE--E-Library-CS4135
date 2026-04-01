@@ -6,7 +6,7 @@ import PublicLayout from '../components/layout/PublicLayout';
 import NotFound from '../pages/NotFound';
 import Unauthorized from '../pages/Unauthorised.tsx';
 // import LoginPage from '../features/auth/LoginPage';
-import LoginPage from "../features/auth/LoginPage.tsx";
+import LoginPage from "../pages/LoginPage";
 
 function AppRouter() {
   return (

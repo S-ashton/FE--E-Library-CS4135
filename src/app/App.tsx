@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from './store/store';
 import { restoreSession } from './store/authSlice';
 import AppRouter from './router/AppRouter';
+import FullPageLoader from './components/ui/FullPageLoader';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -16,7 +17,7 @@ function App() {
   }, []);
 
   if (restoringSession) {
-    return <div>Loading...</div>;
+    return <FullPageLoader message="Loading..." />;
   }
 
   return <AppRouter />;

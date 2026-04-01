@@ -3,9 +3,13 @@ import Navbar from './Navbar';
 
 function AppLayout() {
   return (
-    <div>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       <Navbar />
-      <main>
+      <main style={{
+          maxWidth: '1100px',
+          margin: '0 auto',
+          padding: '24px',
+        }}>
         <Outlet />
       </main>
       <footer>
