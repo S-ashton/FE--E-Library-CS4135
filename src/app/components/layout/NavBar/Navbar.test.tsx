@@ -8,9 +8,10 @@ describe('Navbar', () => {
     renderWithProviders(<Navbar />, {
       preloadedState: {
         auth: {
-          user: { email: 'user@test.com', role: 'USER' },
+          user: { id: '1', email: 'user@test.com', role: 'USER' },
           token: 'fake-token',
           restoringSession: false,
+          expiresAt: '' 
         },
       },
       route: '/dashboard',
@@ -28,9 +29,10 @@ describe('Navbar', () => {
     renderWithProviders(<Navbar />, {
       preloadedState: {
         auth: {
-          user: { email: 'admin@test.com', role: 'ADMIN' },
+          user: { id: '2', email: 'admin@test.com', role: 'ADMIN' },
           token: 'fake-token',
           restoringSession: false,
+          expiresAt: '' 
         },
       },
       route: '/dashboard',
