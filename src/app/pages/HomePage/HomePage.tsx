@@ -1,4 +1,4 @@
-import RecommendationDashboardCard from "../components/ui/recDashboard";
+import RecommendationDashboardCard from "../../components/ui/recDashboard";
 
 export default function HomePage() {
   return (

@@ -7,7 +7,7 @@ import NotFound from '../pages/NotFound';
 import Unauthorized from '../pages/Unauthorised.tsx';
 // import LoginPage from '../features/auth/LoginPage';
 import LoginPage from "../pages/LoginPage";
-import HomePage from '../pages/HomePage';
+import HomePage from '../pages/HomePage/HomePage.tsx';
 
 function AppRouter() {
   return (

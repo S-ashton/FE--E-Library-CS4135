@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
-import type { AppDispatch, RootState } from '../../store/store';
-import { logout } from '../../store/authSlice';
+import type { AppDispatch, RootState } from '../../../store/store';
+import { logout } from '../../../store/authSlice';
 
 function Navbar() {
   const dispatch = useDispatch<AppDispatch>();

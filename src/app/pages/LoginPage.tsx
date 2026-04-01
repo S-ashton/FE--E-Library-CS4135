@@ -5,9 +5,9 @@ import type {AppDispatch} from "../store/store";
 import {login} from "../store/authSlice";
 import {validateEmail, validatePassword} from '../utils/validation';
 import type { FormEvent } from "react";
-import AuthCard from "../components/ui/AuthCard.tsx";
+import AuthCard from "../components/ui/AuthCard/AuthCard.tsx";
 import "./LoginPage.css";
-import LoginForm from "../components/ui/LoginForm.tsx";
+import LoginForm from "../components/ui/LoginForm/LoginForm.tsx";
 
 function LoginPage() {
     // useDispatch is typed with AppDispatch so TypeScript knows about async thunks.
