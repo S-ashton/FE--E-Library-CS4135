@@ -1,4 +1,5 @@
 import Spinner from "../Spinner";
+import type { FormEvent } from "react";
 
 type LoginFormProps = {
   email: string;
@@ -9,7 +10,7 @@ type LoginFormProps = {
   isSubmitting?: boolean;
   onEmailChange: (value: string) => void;
   onPasswordChange: (value: string) => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
 };
 
 export default function LoginForm({

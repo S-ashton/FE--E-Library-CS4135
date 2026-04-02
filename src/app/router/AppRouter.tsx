@@ -8,6 +8,7 @@ import Unauthorized from '../pages/Unauthorised.tsx';
 // import LoginPage from '../features/auth/LoginPage';
 import LoginPage from "../pages/LoginPage";
 import HomePage from '../pages/HomePage/HomePage.tsx';
+import ManagePage from '../pages/ManagePage/ManagePage.tsx';
 
 function AppRouter() {
   return (
@@ -31,7 +32,7 @@ function AppRouter() {
         {/* Role-restricted routes - staff and admin only */}
         <Route element={<RoleRoute allowedRoles={['STAFF', 'ADMIN']} />}>
           <Route element={<AppLayout />}>
-            <Route path="/manage" element={<div>Management Page</div>} />
+            <Route path="/manage" element={<ManagePage />} />
           </Route>
         </Route>
 
