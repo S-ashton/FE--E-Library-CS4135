@@ -1,6 +1,9 @@
+import BookTable from "../../components/ui/BookTable/BookTable";
 import RecommendationDashboardCard from "../../components/ui/recDashboard";
+import { useManageBooks } from "../../hooks/useManageBooks";
 
 export default function HomePage() {
+  const {books} = useManageBooks();
   return (
     <div
       style={{
@@ -44,6 +47,14 @@ export default function HomePage() {
           console.log("Refresh recommendations placeholder");
         }}
       />
+      <BookTable
+        title="Book Catalogue"
+        books={books}
+        mode="public"
+        
+      />
     </div>
+    
+    
   );
 }
