@@ -1,10 +1,13 @@
 import {useState} from "react";
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import type {AppDispatch} from "../../store/store";
-import {login} from "../../store/authSlice";
-import {validateEmail, validatePassword} from '../../utils/validation';
+import type {AppDispatch} from "../store/store";
+import {login} from "../store/authSlice";
+import {validateEmail, validatePassword} from '../utils/validation';
 import type { FormEvent } from "react";
+import AuthCard from "../components/ui/AuthCard/AuthCard.tsx";
+import "./LoginPage.css";
+import LoginForm from "../components/ui/LoginForm/LoginForm.tsx";
 
 function LoginPage() {
     // useDispatch is typed with AppDispatch so TypeScript knows about async thunks.
@@ -87,38 +90,25 @@ function LoginPage() {
     }
 
     return (
-        <>
-            <h1>Sign in</h1>
-            <form onSubmit={handleLoginFormSubmit} noValidate>
-                {error && <span>{error}</span>}
-                <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => {
-                        setEmail(e.target.value);
-                    }}
-                    placeholder="E-mail"
-                />
-                {emailFieldError && <span>{emailFieldError}</span>}
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => {
-                        setPassword(e.target.value);
-                    }}
-                    placeholder="Password"
-                />
-                {passwordFieldErrors.length > 0 && (
-                    <ul>
-                        {passwordFieldErrors.map((err) => (
-                            <li key={err}>{err}</li>
-                        ))}
-                    </ul>
-                )}
-                <button type="submit" disabled={loading}>{loading ? "Signing in..." : "Sign in"}</button>
-            </form>
-        </>
-    )
+    <div className="login-page">
+      <AuthCard
+        title="Welcome back"
+        subtitle="Sign in to continue to E-Library."
+      >
+        <LoginForm
+          email={email}
+          password={password}
+          error={error}
+          emailFieldError={emailFieldError}
+          passwordFieldErrors={passwordFieldErrors}
+          isSubmitting={loading}
+          onEmailChange={setEmail}
+          onPasswordChange={setPassword}
+          onSubmit={handleLoginFormSubmit}
+        />
+      </AuthCard>
+    </div>
+  );
 }
 
 export default LoginPage;

@@ -1,18 +1,34 @@
-import { Outlet } from 'react-router-dom';
-import Navbar from './Navbar';
+import { Outlet } from 'react-router-dom'
+import Navbar from './NavBar/Navbar'
+import Footer from './Footer'
 
 function AppLayout() {
   return (
-    <div>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        background: '#f3f4f6',
+      }}
+    >
       <Navbar />
-      <main>
+
+      <main
+        style={{
+          flex: 1,
+          maxWidth: '1100px',
+          width: '100%',
+          margin: '0 auto',
+          padding: '24px',
+        }}
+      >
         <Outlet />
       </main>
-      <footer>
-        <p>E-Library</p>
-      </footer>
+
+      <Footer />
     </div>
-  );
+  )
 }
 
-export default AppLayout;
+export default AppLayout

@@ -6,7 +6,8 @@ import PublicLayout from '../components/layout/PublicLayout';
 import NotFound from '../pages/NotFound';
 import Unauthorized from '../pages/Unauthorised.tsx';
 // import LoginPage from '../features/auth/LoginPage';
-import LoginPage from "../features/auth/LoginPage.tsx";
+import LoginPage from "../pages/LoginPage";
+import HomePage from '../pages/HomePage/HomePage.tsx';
 
 function AppRouter() {
   return (
@@ -23,7 +24,7 @@ function AppRouter() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<div>Dashboard</div>} />
+            <Route path="/dashboard" element={<HomePage />} />
           </Route>
         </Route>
 
