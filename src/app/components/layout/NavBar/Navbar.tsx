@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import type { AppDispatch, RootState } from '../../../store/store';
 import { logout } from '../../../store/authSlice';
+import './NavBar.css';
 
 function Navbar() {
   const dispatch = useDispatch<AppDispatch>();
@@ -32,17 +33,7 @@ function Navbar() {
           flexWrap: 'wrap',
         }}
       >
-        <Link
-          to="/dashboard"
-          style={{
-            fontSize: '1.1rem',
-            fontWeight: 700,
-            color: '#111827',
-            textDecoration: 'none',
-          }}
-        >
-          E-Library
-        </Link>
+        <Link to="/dashboard" className="nav-link">E-Library</Link>
 
         <div
           style={{
@@ -52,41 +43,14 @@ function Navbar() {
             flexWrap: 'wrap',
           }}
         >
-          <Link
-            to="/dashboard"
-            style={{
-              color: '#374151',
-              textDecoration: 'none',
-              fontWeight: 500,
-            }}
-          >
-            Home
-          </Link>
+          <Link to="/dashboard" className="nav-link">Home</Link>
 
           {(user?.role === 'STAFF' || user?.role === 'ADMIN') && (
-            <Link
-              to="/manage"
-              style={{
-                color: '#374151',
-                textDecoration: 'none',
-                fontWeight: 500,
-              }}
-            >
-              Manage
-            </Link>
+            <Link to="/manage" className="nav-link">Manage</Link>
           )}
 
           {user?.role === 'ADMIN' && (
-            <Link
-              to="/admin"
-              style={{
-                color: '#374151',
-                textDecoration: 'none',
-                fontWeight: 500,
-              }}
-            >
-              Admin
-            </Link>
+            <Link to="/admin" className="nav-link">Admin</Link>
           )}
         </div>
 

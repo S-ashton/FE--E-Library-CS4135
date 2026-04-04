@@ -10,4 +10,18 @@ describe('HomePage', () => {
       screen.getByText(/welcome to e-library/i)
     ).toBeInTheDocument()
   })
+
+  it('renders the book catalogue section', () => {
+    render(<HomePage />)
+    expect(
+      screen.getByText('Book Catalogue')
+    ).toBeInTheDocument()
+  })
+
+  it('renders the recommendation section', () => {
+    render(<HomePage />)
+    expect(
+      screen.getByRole('heading', { name: /recommendation/i })
+    ).toBeInTheDocument()
+  })
 })
