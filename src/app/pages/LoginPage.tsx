@@ -6,7 +6,7 @@ import {login} from "../store/authSlice";
 import {validateEmail, validatePassword} from '../utils/validation';
 import type { FormEvent } from "react";
 import AuthCard from "../components/ui/AuthCard/AuthCard.tsx";
-import "./LoginPage.css";
+import "./loginPage.css";
 import LoginForm from "../components/ui/LoginForm/LoginForm.tsx";
 
 function LoginPage() {
