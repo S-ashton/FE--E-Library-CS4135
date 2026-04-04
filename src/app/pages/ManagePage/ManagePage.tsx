@@ -1,10 +1,30 @@
+import AddBookForm from "../../components/ui/AddBookForm/AddBookForm";
 import BookTable from "../../components/ui/BookTable/BookTable"; 
 import DeleteCheck from "../../components/ui/deleteCheck/deleteCheck";
+import { useAddBook } from "../../hooks/useAddBook";
 import { useDeleteBook } from "../../hooks/useDeleteBooks"; 
 import { useManageBooks } from "../../hooks/useManageBooks";
 
 export default function ManagePage() {
-  const { books, deleteBook } = useManageBooks();
+  const { books, deleteBook, addBook } = useManageBooks();
+
+  const {
+    title,
+    author,
+    description,
+    category,
+    year,
+    error,
+    isSubmitting,
+    setTitle,
+    setAuthor,
+    setDescription,
+    setCategory,
+    setYear,
+    handleSubmit,
+  } = useAddBook({
+    onAddBook: addBook,
+  });
 
   const {
     bookToDelete,
@@ -59,6 +79,24 @@ export default function ManagePage() {
           mode="admin"
           onDeleteBook={requestDelete}
         />
+      </section>
+
+      <section>
+        <AddBookForm
+        bookTitle={title}
+        bookAuthor={author}
+        bookDescription={description}
+        bookGenre={category}
+        bookYear={year}
+        error={error}
+        isSubmitting={isSubmitting}
+        onTitleChange={setTitle}
+        onAuthorChange={setAuthor}
+        onDescriptionChange={setDescription}
+        onGenreChange={setCategory}
+        onYearChange={setYear}
+        onSubmit={handleSubmit}
+      />
       </section>
 
       {bookToDelete && (

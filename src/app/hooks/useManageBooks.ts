@@ -1,15 +1,29 @@
+// src/app/hooks/useManageBooks.ts
 import { useState } from "react";
-import { Book } from "../types/book";
 import { mockBooks } from "../MockData/mockBooks";
+import type { Book } from "../types/book";
 
 export function useManageBooks() {
-    const [books, setBooks] = useState<Book[]>(mockBooks);
-    const deleteBook = (bookId: number) => {
-        setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
+  const [books, setBooks] = useState<Book[]>(mockBooks);
+
+  const addBook = (newBook: Omit<Book, "id">) => {
+    const bookToAdd: Book = {
+      ...newBook,
+      id: Date.now(),
     };
 
-    return {
-        books,
-        deleteBook,
-    };
+    setBooks((currentBooks) => [bookToAdd, ...currentBooks]);
+  };
+
+  const deleteBook = (bookId: number) => {
+    setBooks((currentBooks) =>
+      currentBooks.filter((book) => book.id !== bookId)
+    );
+  };
+
+  return {
+    books,
+    addBook,
+    deleteBook,
+  };
 }
