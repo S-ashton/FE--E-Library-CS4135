@@ -1,10 +1,11 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import ManagePage from './ManagePage'
+import { renderWithProviders } from '../../../test/renderWithProviders'
 
-describe('HomePage', () => {
+describe('ManagePage', () => {
   it('renders the manage library content', () => {
-    render(<ManagePage />)
+    renderWithProviders(<ManagePage />)
 
     expect(
       screen.getByText(/Manage Library Catalogue/i)
@@ -12,7 +13,7 @@ describe('HomePage', () => {
   })
 
   it('renders the book catalogue section for staff', () => {
-    render(<ManagePage />)
+    renderWithProviders(<ManagePage />)
     expect(
       screen.getByText('Library Catalogue')
     ).toBeInTheDocument()
@@ -24,7 +25,7 @@ describe('HomePage', () => {
   })
 
   it('renders the add book section', () => {
-    render(<ManagePage />)
+    renderWithProviders(<ManagePage />)
     expect(
       screen.getByText(/Add New Book/i)
     ).toBeInTheDocument()

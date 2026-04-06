@@ -12,13 +12,6 @@ describe('HomePage', () => {
     ).toBeInTheDocument()
   })
 
-  it('renders the book catalogue section', () => {
-    renderWithProviders(<HomePage />)
-    expect(
-      screen.getByText('Book Catalogue')
-    ).toBeInTheDocument()
-  })
-
   it('renders the recommendation section', () => {
     renderWithProviders(<HomePage />)
     expect(

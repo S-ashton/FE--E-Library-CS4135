@@ -5,6 +5,7 @@ type BookTableProps = {
   title: string
   books: Book[]
   mode: 'public' | 'admin'
+  state: 'loading' | 'empty' | 'error' | 'populated'
   onSelectBook?: (book: Book) => void
   onDeleteBook?: (book: Book) => void
 }
@@ -13,21 +14,50 @@ function BookTable({
   title,
   books,
   mode,
+  state,
   onSelectBook,
   onDeleteBook,
 }: BookTableProps) {
   const showActions = mode === 'admin'
 
-  return (
-    <section
-      style={{
-        background: '#ffffff',
-        border: '1px solid #e5e7eb',
-        borderRadius: '16px',
-        boxShadow: '0 10px 30px rgba(15, 23, 42, 0.08)',
-        overflow: 'hidden',
-      }}
-    >
+    switch (state) {
+    case 'empty':
+      return (
+        <section style={cardStyle}>
+          <h2 style={titleStyle}>Library Catalogue</h2>
+          <p style={{ margin: 0, color: '#475569' }}>There are no books in the catalogue.</p>
+        </section>
+      )
+
+    case 'loading':
+      return (
+        <section style={cardStyle}>
+          <h2 style={titleStyle}>Library Catalogue</h2>
+          <p style={{ margin: 0, color: '#475569' }}>Loading books...</p>
+        </section>
+      )
+
+    case 'error':
+      return (
+        <section style={cardStyle}>
+          <h2 style={titleStyle}>Library Catalogue</h2>
+          <p style={{ margin: 0, color: '#475569' }}>
+            An error occurred while loading books.
+          </p>
+        </section>
+      )
+
+    case 'populated':
+      return (
+      <section
+        style={{
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: '16px',
+          boxShadow: '0 10px 30px rgba(15, 23, 42, 0.08)',
+          overflow: 'hidden',
+        }}
+      >
       <div
         style={{
           padding: '20px 24px',
@@ -179,6 +209,28 @@ function BookTable({
       </div>
     </section>
   )
+
+  default:
+      return null
+    
 }
+
+}
+
+const cardStyle = {
+  background: '#ffffff',
+  border: '1px solid #e5e7eb',
+  borderRadius: '16px',
+  boxShadow: '0 10px 30px rgba(15, 23, 42, 0.08)',
+  padding: '24px',
+  display: 'grid',
+  gap: '20px',
+} as const
+
+const titleStyle = {
+  margin: 0,
+  fontSize: '1.4rem',
+  color: '#0f172a',
+} as const
 
 export default BookTable

@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import BookTable from "../../components/ui/BookTable/BookTable";
 import RecommendationDashboardCard from "../../components/ui/recDashboard";
 import { useManageBooks } from "../../hooks/useManageBooks";
 import { Book } from "../../types/book";
@@ -121,12 +120,6 @@ export default function HomePage() {
           state={activeLoansState}
           isReturning={isReturning}
           onReturnBook={handleReturnBook}
-        />
-        <BookTable
-          title="Book Catalogue"
-          books={books}
-          mode="public"
-          onSelectBook={setSelectedBook}
         />
 
         {selectedBook && (

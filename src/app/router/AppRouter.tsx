@@ -9,6 +9,7 @@ import Unauthorized from '../pages/Unauthorised.tsx';
 import LoginPage from "../pages/LoginPage";
 import HomePage from '../pages/HomePage/HomePage.tsx';
 import ManagePage from '../pages/ManagePage/ManagePage.tsx';
+import CataloguePage from '../pages/CataloguePage.tsx/CataloguePage.tsx';
 
 function AppRouter() {
   return (
@@ -26,6 +27,7 @@ function AppRouter() {
           <Route element={<AppLayout />}>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<HomePage />} />
+            <Route path="/catalogue" element={<CataloguePage />} />
           </Route>
         </Route>
 

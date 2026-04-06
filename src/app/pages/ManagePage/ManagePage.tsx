@@ -1,12 +1,29 @@
+import { useMemo } from "react";
 import AddBookForm from "../../components/ui/AddBookForm/AddBookForm";
 import BookTable from "../../components/ui/BookTable/BookTable"; 
 import DeleteCheck from "../../components/ui/deleteCheck/deleteCheck";
 import { useAddBook } from "../../hooks/useAddBook";
 import { useDeleteBook } from "../../hooks/useDeleteBooks"; 
 import { useManageBooks } from "../../hooks/useManageBooks";
+import { Book } from "../../types/book";
+import { useLoanHistory } from "../../hooks/useLoanHistory";
 
 export default function ManagePage() {
   const { books, deleteBook, addBook } = useManageBooks();
+  const { history } = useLoanHistory();
+
+  const booksWithLoanStatus = useMemo<Book[]>(() => {
+    return books.map((book) => {
+        const hasActiveLoan = history.some(
+        (loan) => loan.bookId === book.id && loan.status === "ACTIVE"
+        );
+
+        return {
+        ...book,
+        status: hasActiveLoan ? "Borrowed" : "Available",
+        };
+    });
+  }, [books, history]);
 
   const {
     title,
@@ -75,8 +92,9 @@ export default function ManagePage() {
       <section>
         <BookTable
           title="Library Catalogue"
-          books={books}
+          books={booksWithLoanStatus}
           mode="admin"
+          state="populated"
           onDeleteBook={requestDelete}
         />
       </section>
