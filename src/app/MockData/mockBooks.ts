@@ -2,7 +2,7 @@ import type { Book } from '../types/book'
 
 export const mockBooks: Book[] = [
   {
-    id: 1,
+    id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
     title: 'The Silent Echo',
     author: 'Elena Rostova',
     category: 'Fiction',
@@ -11,7 +11,7 @@ export const mockBooks: Book[] = [
     description: 'A mystery novel about memory, loss, and hidden truths.',
   },
   {
-    id: 2,
+    id: '1e1a6183-7aa7-4d48-a868-9a39e613370d',
     title: 'Beyond the Stars',
     author: 'Julian Vance',
     category: 'Sci-Fi',
@@ -20,7 +20,7 @@ export const mockBooks: Book[] = [
     description: 'A science-fiction journey through deep space.',
   },
   {
-    id: 3,
+    id: '7c9e6679-7425-40de-944b-e07fc1f90ae7',
     title: 'Whispers in the Wind',
     author: 'Sarah Jenkins',
     category: 'Fantasy',

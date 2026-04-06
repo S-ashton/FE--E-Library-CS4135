@@ -9,13 +9,13 @@ export function useManageBooks() {
   const addBook = (newBook: Omit<Book, "id">) => {
     const bookToAdd: Book = {
       ...newBook,
-      id: Date.now(),
+      id: Date.now().toString(),
     };
 
     setBooks((currentBooks) => [bookToAdd, ...currentBooks]);
   };
 
-  const deleteBook = (bookId: number) => {
+  const deleteBook = (bookId: string) => {
     setBooks((currentBooks) =>
       currentBooks.filter((book) => book.id !== bookId)
     );

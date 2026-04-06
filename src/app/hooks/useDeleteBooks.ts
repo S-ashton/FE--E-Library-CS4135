@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { Book } from '../types/book'
 
 type UseDeleteBookParams = {
-  onDelete: (bookId: number) => void
+  onDelete: (bookId: string) => void
 }
 
 export function useDeleteBook({ onDelete }: UseDeleteBookParams) {
