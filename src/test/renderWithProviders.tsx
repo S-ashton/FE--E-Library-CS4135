@@ -6,6 +6,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import authReducer from '../app/store/authSlice'
 import loanReducer from '../app/store/loanSlice'
 import type { RootState } from '../app/store/store'
+import { ToastProvider } from '../app/context/ToastProvider'
 
 type Options = {
   preloadedState?: Partial<RootState>
@@ -28,9 +29,11 @@ export function renderWithProviders(
     store,
     ...render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={[route]}>
-          {ui}
-        </MemoryRouter>
+        <ToastProvider>
+          <MemoryRouter initialEntries={[route]}>
+            {ui}
+          </MemoryRouter>
+        </ToastProvider>
       </Provider>
     ),
   }
