@@ -8,6 +8,8 @@ import ActiveLoansCard from "../../components/ui/ActiveLoansCard/ActiveLoansCard
 import { useLoanHistory } from "../../hooks/useLoanHistory";
 import { useReturnBook } from "../../hooks/useReturnBook";
 import { useRequestLoan } from "../../hooks/useRequestLoan";
+import { useToast } from "../../hooks/useToast";
+
 
 export default function HomePage() {
 
@@ -16,6 +18,7 @@ export default function HomePage() {
   const { returnBookLoan, isReturning } = useReturnBook();
   const {books} = useManageBooks();
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+  const { showSuccess, showError } = useToast();
 
   useEffect(() => {
     refreshHistory();
@@ -42,8 +45,10 @@ export default function HomePage() {
     const handleReturnBook = async (loanId: string): Promise<void> => {
       try {
         await returnBookLoan(loanId);
+        showSuccess("Book returned successfully!");
       } catch (err) {
         console.error("Error returning book:", err);
+        showError("Failed to return book. Please try again.");
       }
     };
 
@@ -51,8 +56,10 @@ export default function HomePage() {
         try {
           await requestLoan(book.id);
           setSelectedBook(null);
+          showSuccess("Book borrowed successfully!");
         } catch (err) {
           console.error("Failed to borrow book:", err);
+          showError("Failed to borrow book. Please try again.");
         }
       };
 
