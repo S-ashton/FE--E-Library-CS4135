@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router-dom'
 import { configureStore } from '@reduxjs/toolkit'
 import authReducer from '../app/store/authSlice'
+import loanReducer from '../app/store/loanSlice'
 import type { RootState } from '../app/store/store'
 
 type Options = {
@@ -18,6 +19,7 @@ export function renderWithProviders(
   const store = configureStore({
     reducer: {
       auth: authReducer,
+      loans: loanReducer,
     },
     preloadedState: preloadedState as RootState,
   })
