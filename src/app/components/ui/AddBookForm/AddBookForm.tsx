@@ -81,7 +81,7 @@ export default function AddBookForm({
         <div
             style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
             gap: "20px",
             }}>
             <div style={{ display: "grid", gap: "6px" }}>
@@ -95,7 +95,8 @@ export default function AddBookForm({
                     onChange={(e) => onTitleChange(e.target.value)}
                     disabled={isSubmitting}
                     style={{
-                    width: "400px",
+                    width: "100%",
+                    maxWidth: "400px", 
                     padding: "12px 14px",
                     border: "1px solid #cbd5e1",
                     borderRadius: "10px",
@@ -115,7 +116,8 @@ export default function AddBookForm({
                     onChange={(e) => onAuthorChange(e.target.value)}
                     disabled={isSubmitting}
                     style={{
-                    width: "400px",
+                    width: "100%",
+                    maxWidth: "400px",
                     padding: "12px 14px",
                     border: "1px solid #cbd5e1",
                     borderRadius: "10px",
@@ -135,7 +137,8 @@ export default function AddBookForm({
                     onChange={(e) => onGenreChange(e.target.value)}
                     disabled={isSubmitting}
                     style={{
-                    width: "400px",
+                    width: "100%",
+                    maxWidth: "400px",
                     padding: "12px 14px",
                     border: "1px solid #cbd5e1",
                     borderRadius: "10px",
@@ -155,7 +158,8 @@ export default function AddBookForm({
                     onChange={(e) => onYearChange(e.target.value)}
                     disabled={isSubmitting}
                     style={{
-                    width: "400px",
+                    width: "100%",
+                    maxWidth: "400px",
                     padding: "12px 14px",
                     border: "1px solid #cbd5e1",
                     borderRadius: "10px",
@@ -180,7 +184,8 @@ export default function AddBookForm({
                     disabled={isSubmitting}
                     rows={5}
                     style={{
-                    width: "600px",
+                    width: "100%",
+                    maxWidth: "600px",
                     padding: "12px 14px",
                     border: "1px solid #cbd5e1",
                     borderRadius: "10px",
@@ -198,7 +203,8 @@ export default function AddBookForm({
                 border: "none",
                 borderRadius: "10px",
                 padding: "12px 16px",
-                width: "150px",
+                width: "100%",
+                maxWidth: "150px",
                 background: isSubmitting ? "#93c5fd" : "#2563eb",
                 color: "#ffffff",
                 fontWeight: 600,

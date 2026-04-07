@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import styles from "./AuthCard.module.css";
 
 type AuthCardProps = {
   title: string;
@@ -12,39 +13,11 @@ export default function AuthCard({
   children,
 }: AuthCardProps) {
   return (
-    <div
-      style={{
-        width: "100%",
-        maxWidth: "420px",
-        background: "#ffffff",
-        border: "1px solid #e2e8f0",
-        borderRadius: "16px",
-        boxShadow: "0 10px 30px rgba(15, 23, 42, 0.08)",
-        padding: "28px",
-      }}
-    >
-      <div style={{ marginBottom: "20px" }}>
-        <h1
-          style={{
-            margin: 0,
-            fontSize: "1.8rem",
-            lineHeight: 1.2,
-            color: "#0f172a",
-          }}
-        >
-          {title}
-        </h1>
+    <div className={styles.card}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>{title}</h1>
 
-        {subtitle && (
-          <p
-            style={{
-              margin: "8px 0 0",
-              color: "#475569",
-            }}
-          >
-            {subtitle}
-          </p>
-        )}
+        {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
       </div>
 
       {children}

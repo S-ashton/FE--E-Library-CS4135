@@ -3,7 +3,7 @@ import type { FormEvent } from "react";
 import type { Book } from "../types/book";
 
 type UseAddBookParams = {
-  onAddBook: (book: Omit<Book, "id">) => void;
+  onAddBook: (book: Omit<Book, "id">) => Promise<void> | void;
 };
 
 export function useAddBook({ onAddBook }: UseAddBookParams) {
@@ -15,7 +15,7 @@ export function useAddBook({ onAddBook }: UseAddBookParams) {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
 
@@ -34,7 +34,7 @@ export function useAddBook({ onAddBook }: UseAddBookParams) {
     setIsSubmitting(true);
 
     try {
-      onAddBook({
+      await onAddBook({
         title: title.trim(),
         author: author.trim(),
         description: description.trim(),

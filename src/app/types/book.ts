@@ -6,4 +6,5 @@ export type Book = {
   year: number
   status: 'Available' | 'Borrowed'
   description?: string
+  coverImageUrl?: string
 }

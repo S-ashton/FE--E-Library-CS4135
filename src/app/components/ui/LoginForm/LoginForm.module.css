@@ -1,0 +1,62 @@
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+.errorBox {
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.label {
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #0f172a;
+  box-sizing: border-box;
+}
+
+.fieldError {
+  color: #dc2626;
+  font-size: 0.95rem;
+}
+
+.passwordErrorList {
+  margin: 0;
+  padding-left: 18px;
+  color: #dc2626;
+}
+
+.submitButton {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 16px;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 600;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.submitButtonDisabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+}

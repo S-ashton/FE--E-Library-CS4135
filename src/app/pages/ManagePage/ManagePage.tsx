@@ -1,16 +1,18 @@
 import { useMemo } from "react";
 import AddBookForm from "../../components/ui/AddBookForm/AddBookForm";
 import BookTable from "../../components/ui/BookTable/BookTable"; 
-import DeleteCheck from "../../components/ui/deleteCheck/deleteCheck";
+import DeleteCheck from "../../components/ui/DeleteCheck/DeleteCheck";
 import { useAddBook } from "../../hooks/useAddBook";
 import { useDeleteBook } from "../../hooks/useDeleteBooks"; 
 import { useManageBooks } from "../../hooks/useManageBooks";
 import { Book } from "../../types/book";
 import { useLoanHistory } from "../../hooks/useLoanHistory";
+import { useToast } from "../../hooks/useToast";
 
 export default function ManagePage() {
   const { books, deleteBook, addBook } = useManageBooks();
   const { history } = useLoanHistory();
+  const {showSuccess, showError} = useToast();
 
   const booksWithLoanStatus = useMemo<Book[]>(() => {
     return books.map((book) => {
@@ -40,7 +42,15 @@ export default function ManagePage() {
     setYear,
     handleSubmit,
   } = useAddBook({
-    onAddBook: addBook,
+    onAddBook: async (book) => {
+      try {
+        await addBook(book);
+        showSuccess("Book added successfully!");
+      } catch (err) {
+        console.error("Failed to add book:", err);
+        showError("Failed to add book. Please try again.");
+      } 
+    }
   });
 
   const {
@@ -49,7 +59,15 @@ export default function ManagePage() {
     cancelDelete,
     confirmDelete,
   } = useDeleteBook({
-    onDelete: deleteBook,
+    onDelete: async (bookId) => {
+      try {
+        await deleteBook(bookId);
+        showSuccess("Book deleted successfully!");
+      } catch (err) {
+        console.error("Failed to delete book:", err);
+        showError("Failed to delete book. Please try again.");
+      }
+    }
   });
 
   return (
