@@ -1,4 +1,6 @@
 import Spinner from "../Spinner";
+import type { FormEvent } from "react";
+import styles from "./LoginForm.module.css";
 
 type LoginFormProps = {
   email: string;
@@ -9,7 +11,7 @@ type LoginFormProps = {
   isSubmitting?: boolean;
   onEmailChange: (value: string) => void;
   onPasswordChange: (value: string) => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
 };
 
 export default function LoginForm({
@@ -24,24 +26,11 @@ export default function LoginForm({
   onSubmit,
 }: LoginFormProps) {
   return (
-    <form onSubmit={onSubmit} style={{ display: "grid", gap: "16px" }}>
-      {error && (
-        <div
-          style={{
-            color: "#dc2626",
-            background: "#fef2f2",
-            border: "1px solid #fecaca",
-            borderRadius: "10px",
-            padding: "10px 12px",
-            fontSize: "0.95rem",
-          }}
-        >
-          {error}
-        </div>
-      )}
+    <form onSubmit={onSubmit} className={styles.form}>
+      {error && <div className={styles.errorBox}>{error}</div>}
 
-      <div style={{ display: "grid", gap: "6px" }}>
-        <label htmlFor="email" style={{ fontWeight: 600 }}>
+      <div className={styles.field}>
+        <label htmlFor="email" className={styles.label}>
           Email
         </label>
         <input
@@ -53,24 +42,15 @@ export default function LoginForm({
           autoComplete="email"
           disabled={isSubmitting}
           required
-          style={{
-            width: "100%",
-            padding: "12px 14px",
-            border: "1px solid #cbd5e1",
-            borderRadius: "10px",
-            background: "#ffffff",
-            color: "#0f172a",
-          }}
+          className={styles.input}
         />
         {emailFieldError && (
-          <span style={{ color: "#dc2626", fontSize: "0.95rem" }}>
-            {emailFieldError}
-          </span>
+          <span className={styles.fieldError}>{emailFieldError}</span>
         )}
       </div>
 
-      <div style={{ display: "grid", gap: "6px" }}>
-        <label htmlFor="password" style={{ fontWeight: 600 }}>
+      <div className={styles.field}>
+        <label htmlFor="password" className={styles.label}>
           Password
         </label>
         <input
@@ -82,17 +62,10 @@ export default function LoginForm({
           autoComplete="current-password"
           disabled={isSubmitting}
           required
-          style={{
-            width: "100%",
-            padding: "12px 14px",
-            border: "1px solid #cbd5e1",
-            borderRadius: "10px",
-            background: "#ffffff",
-            color: "#0f172a",
-          }}
+          className={styles.input}
         />
         {passwordFieldErrors.length > 0 && (
-          <ul style={{ margin: 0, paddingLeft: "18px", color: "#dc2626" }}>
+          <ul className={styles.passwordErrorList}>
             {passwordFieldErrors.map((err) => (
               <li key={err}>{err}</li>
             ))}
@@ -103,19 +76,9 @@ export default function LoginForm({
       <button
         type="submit"
         disabled={isSubmitting}
-        style={{
-          border: "none",
-          borderRadius: "10px",
-          padding: "12px 16px",
-          background: isSubmitting ? "#93c5fd" : "#2563eb",
-          color: "#ffffff",
-          fontWeight: 600,
-          display: "inline-flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "8px",
-          cursor: isSubmitting ? "not-allowed" : "pointer",
-        }}
+        className={`${styles.submitButton} ${
+          isSubmitting ? styles.submitButtonDisabled : ""
+        }`}
       >
         {isSubmitting && <Spinner size={16} />}
         {isSubmitting ? "Signing in..." : "Sign in"}

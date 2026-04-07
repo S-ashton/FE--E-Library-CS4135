@@ -1,14 +1,19 @@
-type recDashboardProps = {
+//import { useToast } from "../../hooks/useToast";
+
+type RecDashboardProps = {
   title?: string;
   description?: string;
   onRefresh?: () => void;
 };
 
-export default function recDashboard({
+export default function RecDashboard({
   title = "Recommendations Dashboard",
   description = "This area will show personalised book recommendations once the recommendations API is connected.",
   onRefresh,
-}: recDashboardProps) {
+}: RecDashboardProps) {
+
+  //const { showSuccess } = useToast();
+
   return (
     <section
       style={{

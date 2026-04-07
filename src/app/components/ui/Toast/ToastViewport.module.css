@@ -1,0 +1,52 @@
+.viewport {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: grid;
+  gap: 12px;
+  z-index: 2000;
+  width: min(360px, calc(100vw - 32px));
+}
+
+.toast {
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.successToast {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.errorToast {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.message {
+  font-weight: 600;
+}
+
+.closeButton {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  color: inherit;
+  line-height: 1;
+}
+
+@media (max-width: 480px) {
+  .viewport {
+    top: 16px;
+    right: 16px;
+    width: calc(100vw - 32px);
+  }
+}

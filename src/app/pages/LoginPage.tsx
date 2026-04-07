@@ -6,7 +6,7 @@ import {login} from "../store/authSlice";
 import {validateEmail, validatePassword} from '../utils/validation';
 import type { FormEvent } from "react";
 import AuthCard from "../components/ui/AuthCard/AuthCard.tsx";
-import "./LoginPage.css";
+import "./loginPage.css";
 import LoginForm from "../components/ui/LoginForm/LoginForm.tsx";
 
 function LoginPage() {
@@ -90,23 +90,71 @@ function LoginPage() {
     }
 
     return (
-    <div className="login-page">
-      <AuthCard
-        title="Welcome back"
-        subtitle="Sign in to continue to E-Library."
-      >
-        <LoginForm
-          email={email}
-          password={password}
-          error={error}
-          emailFieldError={emailFieldError}
-          passwordFieldErrors={passwordFieldErrors}
-          isSubmitting={loading}
-          onEmailChange={setEmail}
-          onPasswordChange={setPassword}
-          onSubmit={handleLoginFormSubmit}
-        />
-      </AuthCard>
+        <div className="login-page">
+            <div className="login-layout">
+                <section className="login-form-panel">
+                    <div className="login-form-content">
+                        <div className="login-brand">
+                            <div className="login-brand-mark">📘</div>
+                                <span className="login-brand-text">E-Library</span>
+                            </div>
+
+                        <div className="login-card-wrap">
+                            <AuthCard
+                                title="Welcome back"
+                                subtitle="Sign in to continue to E-Library."
+                            >
+                                <LoginForm
+                                email={email}
+                                password={password}
+                                error={error}
+                                emailFieldError={emailFieldError}
+                                passwordFieldErrors={passwordFieldErrors}
+                                isSubmitting={loading}
+                                onEmailChange={setEmail}
+                                onPasswordChange={setPassword}
+                                onSubmit={handleLoginFormSubmit}
+                                />
+                            </AuthCard>
+                        </div>
+                    </div>
+                </section>
+
+            <aside className="login-visual-panel">
+            <div className="login-visual-content">
+                <div className="login-visual-badge">Library access made simple</div>
+
+                <h2 className="login-visual-title">
+                Borrow, manage, and discover books with ease.
+                </h2>
+
+                <p className="login-visual-text">
+                A cleaner, calmer way to access your library dashboard, catalogue,
+                and loan activity.
+                </p>
+
+                <div className="login-illustration">
+                <div className="login-glow login-glow-one" />
+                <div className="login-glow login-glow-two" />
+
+                <div className="login-mock-card">
+                    <div className="login-mock-header" />
+                    <div className="login-mock-body">
+                    <div className="login-mock-book" />
+                    <div className="login-mock-lines">
+                        <span />
+                        <span />
+                        <span />
+                    </div>
+                    </div>
+                </div>
+
+                <div className="login-floating-chip login-chip-one">Available</div>
+                <div className="login-floating-chip login-chip-two">Borrowed</div>
+                </div>
+            </div>
+            </aside>
+        </div>
     </div>
   );
 }

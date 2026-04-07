@@ -1,0 +1,109 @@
+.card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  padding: 24px;
+  display: grid;
+  gap: 20px;
+}
+
+.heading {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #0f172a;
+}
+
+.message {
+  margin: 0;
+  color: #475569;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.summaryCard {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  background: #f8fafc;
+}
+
+.summaryLabel {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.summaryValue {
+  margin: 8px 0 0;
+  font-weight: 700;
+}
+
+.loansGridWrapper {
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 20px;
+  background: #f8fafc;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.loanCard {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  background: #ffffff;
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.loanTitle {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1rem;
+}
+
+.loanMeta {
+  margin: 0;
+  color: #6b7280;
+}
+
+.fineText {
+  margin: 0;
+  color: #dc2626;
+}
+
+.returnButton {
+  margin-top: 8px;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.returnButtonDisabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 20px;
+  }
+
+  .loansGridWrapper {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+}

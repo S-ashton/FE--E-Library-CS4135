@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import type { AppDispatch, RootState } from '../../../store/store';
 import { logout } from '../../../store/authSlice';
+import './NavBar.css';
 
 function Navbar() {
   const dispatch = useDispatch<AppDispatch>();
@@ -14,112 +15,32 @@ function Navbar() {
   };
 
   return (
-    <nav
-      style={{
-        background: '#c6f3fb',
-        borderBottom: '1px solid #e5e7eb',
-      }}
-    >
-      <div
-        style={{
-          maxWidth: '1100px',
-          margin: '0 auto',
-          padding: '14px 24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '16px',
-          flexWrap: 'wrap',
-        }}
-      >
-        <Link
-          to="/dashboard"
-          style={{
-            fontSize: '1.1rem',
-            fontWeight: 700,
-            color: '#111827',
-            textDecoration: 'none',
-          }}
-        >
+    <nav className="navbar">
+      <div className="navbar-container">
+        <Link to="/dashboard" className="nav-link nav-brand">
           E-Library
         </Link>
 
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px',
-            flexWrap: 'wrap',
-          }}
-        >
-          <Link
-            to="/dashboard"
-            style={{
-              color: '#374151',
-              textDecoration: 'none',
-              fontWeight: 500,
-            }}
-          >
-            Home
-          </Link>
+        <div className="nav-links-group">
+          <Link to="/dashboard" className="nav-link">Home</Link>
+          <Link to="/catalogue" className="nav-link">Catalogue</Link>
 
           {(user?.role === 'STAFF' || user?.role === 'ADMIN') && (
-            <Link
-              to="/manage"
-              style={{
-                color: '#374151',
-                textDecoration: 'none',
-                fontWeight: 500,
-              }}
-            >
-              Manage
-            </Link>
+            <Link to="/manage" className="nav-link">Manage</Link>
           )}
 
           {user?.role === 'ADMIN' && (
-            <Link
-              to="/admin"
-              style={{
-                color: '#374151',
-                textDecoration: 'none',
-                fontWeight: 500,
-              }}
-            >
-              Admin
-            </Link>
+            <Link to="/admin" className="nav-link">Admin</Link>
           )}
         </div>
 
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            flexWrap: 'wrap',
-          }}
-        >
-          {user && (
-            <span
-              style={{
-                color: '#6b7280',
-                fontSize: '0.95rem',
-              }}
-            >
-              {user.email}
-            </span>
-          )}
+        <div className="nav-user-group">
+          {user && <span className="nav-user-email">{user.email}</span>}
 
           <button
+            type="button"
             onClick={handleLogout}
-            style={{
-              border: 'none',
-              borderRadius: '8px',
-              padding: '8px 14px',
-              background: '#2563eb',
-              color: '#ffffff',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
+            className="nav-logout-button"
           >
             Logout
           </button>
