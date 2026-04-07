@@ -15,36 +15,14 @@ function Navbar() {
   };
 
   return (
-    <nav
-      style={{
-        background: '#c6f3fb',
-        borderBottom: '1px solid #e5e7eb',
-      }}
-    >
-      <div
-        style={{
-          maxWidth: '1100px',
-          margin: '0 auto',
-          padding: '14px 24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '16px',
-          flexWrap: 'wrap',
-        }}
-      >
-        <Link to="/dashboard" className="nav-link">E-Library</Link>
+    <nav className="navbar">
+      <div className="navbar-container">
+        <Link to="/dashboard" className="nav-link nav-brand">
+          E-Library
+        </Link>
 
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px',
-            flexWrap: 'wrap',
-          }}
-        >
+        <div className="nav-links-group">
           <Link to="/dashboard" className="nav-link">Home</Link>
-
           <Link to="/catalogue" className="nav-link">Catalogue</Link>
 
           {(user?.role === 'STAFF' || user?.role === 'ADMIN') && (
@@ -56,36 +34,13 @@ function Navbar() {
           )}
         </div>
 
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            flexWrap: 'wrap',
-          }}
-        >
-          {user && (
-            <span
-              style={{
-                color: '#6b7280',
-                fontSize: '0.95rem',
-              }}
-            >
-              {user.email}
-            </span>
-          )}
+        <div className="nav-user-group">
+          {user && <span className="nav-user-email">{user.email}</span>}
 
           <button
+            type="button"
             onClick={handleLogout}
-            style={{
-              border: 'none',
-              borderRadius: '8px',
-              padding: '8px 14px',
-              background: '#2563eb',
-              color: '#ffffff',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
+            className="nav-logout-button"
           >
             Logout
           </button>

@@ -1,11 +1,11 @@
 .card {
   width: 100%;
-  max-width: 420px;
+  max-width: 500px;
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-  padding: 28px;
+  padding: 30px;
   box-sizing: border-box;
 }
 
