@@ -102,7 +102,7 @@ function BookTable({
                     <td className={styles.cell}>
                       <span className={styles.categoryBadge}>{book.category}</span>
                     </td>
-                    <td className={`${styles.cell} ${styles.yearCell}`}>{book.year}</td>
+                    <td className={`${styles.cell} ${styles.yearCell}`}>{book.yearPublished}</td>
                     <td className={styles.cell}>
                       <span
                         className={`${styles.statusBadge} ${

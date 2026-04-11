@@ -1,48 +1,65 @@
 import { useMemo, useState, useEffect } from "react";
 import BookDetailsCard from "../../components/ui/BookDetailsCard/BookDetailsCard";
-import BookTable from "../../components/ui/BookTable/BookTable"; 
+import BookTable from "../../components/ui/BookTable/BookTable";
 import { useManageBooks } from "../../hooks/useManageBooks";
 import { Book } from "../../types/book";
 import { useLoanHistory } from "../../hooks/useLoanHistory";
 import { useRequestLoan } from "../../hooks/useRequestLoan";
 import { useToast } from "../../hooks/useToast";
+import { getAvailableCopy } from "../../store/bookSlice";
+import { useAppDispatch } from "../../hooks/reduxHooks";
 
 export default function CataloguePage() {
-    const { history, error, refreshHistory } = useLoanHistory();
-      const { requestLoan, isBorrowing } = useRequestLoan();
-      const { books } = useManageBooks();
-      const [selectedBook, setSelectedBook] = useState<Book | null>(null);
-      const { showSuccess, showError } = useToast();
-    
-      useEffect(() => {
-        refreshHistory();
-      }, [refreshHistory]);
-    
-      
+  const { history, error, refreshHistory } = useLoanHistory();
+  const { requestLoan, isBorrowing } = useRequestLoan();
+  const { books, refreshBooks, isLoadingBooks, booksError } = useManageBooks();
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+  const { showSuccess, showError } = useToast();
+  const dispatch = useAppDispatch();
+ 
 
-        const booksWithLoanStatus = useMemo<Book[]>(() => {
-            return books.map((book) => {
-                const hasActiveLoan = history.some(
-                (loan) => loan.bookId === book.id && loan.status === "ACTIVE"
-                );
+  useEffect(() => {
+    refreshHistory();
+    refreshBooks();
+  }, [refreshHistory, refreshBooks]);
 
-                return {
-                ...book,
-                status: hasActiveLoan ? "Borrowed" : "Available",
-                };
-            });
-        }, [books, history]);
-    
-          const handleBorrowBook = async (book: Book) => {
-            try {
-              await requestLoan(book.id);
-              setSelectedBook(null);
-              showSuccess("Book borrowed successfully!");
-            } catch (err) {
-              console.error("Failed to borrow book:", err);
-              showError("Failed to borrow book. Please try again.");
-            }
-          };
+  const booksWithLoanStatus = useMemo<Book[]>(() => {
+    return books.map((book) => {
+      const hasActiveLoan = history.some(
+        (loan) => loan.bookId === book.id.toString() && loan.status === "ACTIVE"
+      );
+
+      return {
+        ...book,
+        status: hasActiveLoan ? "Borrowed" : "Available",
+      };
+    });
+  }, [books, history]);
+
+  const handleBorrowBook = async (book: Book) => {
+  try {
+    const availableCopy = await dispatch(getAvailableCopy(book.id)).unwrap();
+    console.log("availableCopy", availableCopy);
+
+    await requestLoan(availableCopy.id);
+    setSelectedBook(null);
+    showSuccess("Book borrowed successfully!");
+    await refreshHistory();
+    await refreshBooks();
+  } catch (err) {
+    console.error("Failed to borrow book:", err);
+    showError("Failed to borrow book. Please try again.");
+  }
+};
+
+  const booksTableState =
+    isLoadingBooks
+      ? "loading"
+      : booksError
+      ? "error"
+      : booksWithLoanStatus.length === 0
+      ? "empty"
+      : "populated";
 
   return (
     <div
@@ -67,7 +84,7 @@ export default function CataloguePage() {
             color: "#0f172a",
           }}
         >
-          Manage Library
+          Book Catalogue
         </h1>
 
         <p
@@ -77,7 +94,7 @@ export default function CataloguePage() {
             maxWidth: "720px",
           }}
         >
-          Library Catalogue.
+          Browse and borrow books from the library catalogue.
         </p>
       </section>
 
@@ -86,7 +103,7 @@ export default function CataloguePage() {
           title="Book Catalogue"
           books={booksWithLoanStatus}
           mode="public"
-          state='populated'
+          state={booksTableState}
           onSelectBook={setSelectedBook}
         />
 

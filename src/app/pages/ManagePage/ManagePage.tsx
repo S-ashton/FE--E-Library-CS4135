@@ -1,31 +1,53 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import AddBookForm from "../../components/ui/AddBookForm/AddBookForm";
-import BookTable from "../../components/ui/BookTable/BookTable"; 
+import BookTable from "../../components/ui/BookTable/BookTable";
 import DeleteCheck from "../../components/ui/DeleteCheck/DeleteCheck";
 import { useAddBook } from "../../hooks/useAddBook";
-import { useDeleteBook } from "../../hooks/useDeleteBooks"; 
+import { useDeleteBook } from "../../hooks/useDeleteBooks";
 import { useManageBooks } from "../../hooks/useManageBooks";
 import { Book } from "../../types/book";
 import { useLoanHistory } from "../../hooks/useLoanHistory";
 import { useToast } from "../../hooks/useToast";
 
 export default function ManagePage() {
-  const { books, deleteBook, addBook } = useManageBooks();
-  const { history } = useLoanHistory();
-  const {showSuccess, showError} = useToast();
+  const {
+    books,
+    deleteBook,
+    addBook,
+    refreshBooks,
+    isLoadingBooks,
+    booksError,
+  } = useManageBooks();
+
+  const { history, refreshHistory } = useLoanHistory();
+  const { showSuccess, showError } = useToast();
+
+  useEffect(() => {
+    refreshBooks();
+    refreshHistory();
+  }, [refreshBooks, refreshHistory]);
 
   const booksWithLoanStatus = useMemo<Book[]>(() => {
     return books.map((book) => {
-        const hasActiveLoan = history.some(
-        (loan) => loan.bookId === book.id && loan.status === "ACTIVE"
-        );
+      const hasActiveLoan = history.some(
+        (loan) => loan.bookId === book.id.toString() && loan.status === "ACTIVE"
+      );
 
-        return {
+      return {
         ...book,
         status: hasActiveLoan ? "Borrowed" : "Available",
-        };
+      };
     });
   }, [books, history]);
+
+  const booksTableState =
+    isLoadingBooks
+      ? "loading"
+      : booksError
+      ? "error"
+      : booksWithLoanStatus.length === 0
+      ? "empty"
+      : "populated";
 
   const {
     title,
@@ -33,6 +55,8 @@ export default function ManagePage() {
     description,
     category,
     year,
+    language,
+    coverImage,
     error,
     isSubmitting,
     setTitle,
@@ -40,17 +64,21 @@ export default function ManagePage() {
     setDescription,
     setCategory,
     setYear,
+    setLanguage,
+    setCoverImage,
     handleSubmit,
   } = useAddBook({
     onAddBook: async (book) => {
       try {
         await addBook(book);
+        await refreshBooks();
         showSuccess("Book added successfully!");
       } catch (err) {
         console.error("Failed to add book:", err);
         showError("Failed to add book. Please try again.");
-      } 
-    }
+        throw err;
+      }
+    },
   });
 
   const {
@@ -62,12 +90,13 @@ export default function ManagePage() {
     onDelete: async (bookId) => {
       try {
         await deleteBook(bookId);
+        await refreshBooks();
         showSuccess("Book deleted successfully!");
       } catch (err) {
         console.error("Failed to delete book:", err);
         showError("Failed to delete book. Please try again.");
       }
-    }
+    },
   });
 
   return (
@@ -112,27 +141,31 @@ export default function ManagePage() {
           title="Library Catalogue"
           books={booksWithLoanStatus}
           mode="admin"
-          state="populated"
+          state={booksTableState}
           onDeleteBook={requestDelete}
         />
       </section>
 
       <section>
         <AddBookForm
-        bookTitle={title}
-        bookAuthor={author}
-        bookDescription={description}
-        bookGenre={category}
-        bookYear={year}
-        error={error}
-        isSubmitting={isSubmitting}
-        onTitleChange={setTitle}
-        onAuthorChange={setAuthor}
-        onDescriptionChange={setDescription}
-        onGenreChange={setCategory}
-        onYearChange={setYear}
-        onSubmit={handleSubmit}
-      />
+          bookTitle={title}
+          bookAuthor={author}
+          bookDescription={description}
+          bookGenre={category}
+          bookYear={year}
+          bookLanguage={language}
+          bookCoverImage={coverImage}
+          error={error}
+          isSubmitting={isSubmitting}
+          onTitleChange={setTitle}
+          onAuthorChange={setAuthor}
+          onDescriptionChange={setDescription}
+          onGenreChange={setCategory}
+          onYearChange={setYear}
+          onLanguageChange={setLanguage}
+          onCoverImageChange={setCoverImage}
+          onSubmit={handleSubmit}
+        />
       </section>
 
       {bookToDelete && (

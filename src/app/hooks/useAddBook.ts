@@ -1,9 +1,9 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import type { Book } from "../types/book";
+import { AddBookInput } from "./useManageBooks";
 
 type UseAddBookParams = {
-  onAddBook: (book: Omit<Book, "id">) => Promise<void> | void;
+  onAddBook: (book: AddBookInput) => Promise<void> | void;
 };
 
 export function useAddBook({ onAddBook }: UseAddBookParams) {
@@ -12,6 +12,8 @@ export function useAddBook({ onAddBook }: UseAddBookParams) {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [year, setYear] = useState("");
+  const [language, setLanguage] = useState("");
+  const [coverImage, setCoverImage] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -19,7 +21,12 @@ export function useAddBook({ onAddBook }: UseAddBookParams) {
     e.preventDefault();
     setError(null);
 
-    if (!title.trim() || !author.trim() || !category.trim() || !year.trim()) {
+    if (
+      !title.trim() ||
+      !author.trim() ||
+      !category.trim() ||
+      !year.trim()
+    ) {
       setError("Please fill in all required fields.");
       return;
     }
@@ -38,8 +45,10 @@ export function useAddBook({ onAddBook }: UseAddBookParams) {
         title: title.trim(),
         author: author.trim(),
         description: description.trim(),
-        category: category.trim(),
-        year: parsedYear,
+        category: category.trim().toUpperCase(),
+        yearPublished: parsedYear,
+        language: language.trim().toUpperCase(),
+        coverImage: coverImage,
         status: "Available",
       });
 
@@ -48,6 +57,8 @@ export function useAddBook({ onAddBook }: UseAddBookParams) {
       setDescription("");
       setCategory("");
       setYear("");
+      setLanguage("");
+      setCoverImage(null);
     } catch {
       setError("Failed to add book.");
     } finally {
@@ -61,6 +72,8 @@ export function useAddBook({ onAddBook }: UseAddBookParams) {
     description,
     category,
     year,
+    language,
+    coverImage,
     error,
     isSubmitting,
     setTitle,
@@ -68,6 +81,8 @@ export function useAddBook({ onAddBook }: UseAddBookParams) {
     setDescription,
     setCategory,
     setYear,
+    setLanguage,
+    setCoverImage,
     handleSubmit,
   };
 }

@@ -58,7 +58,7 @@ export default function BookDetailsCard({
             </p>
 
             <p className={styles.metaText}>
-              <strong>Year:</strong> {book.year}
+              <strong>Year:</strong> {book.yearPublished}
             </p>
 
             <p className={styles.description}>

@@ -1,29 +1,62 @@
-// src/app/hooks/useManageBooks.ts
-import { useState } from "react";
-import { mockBooks } from "../MockData/mockBooks";
-import type { Book } from "../types/book";
+import { useCallback } from "react";
+import { useAppDispatch, useAppSelector } from "./reduxHooks";
+import { fetchBooks, addBookToLibrary, searchBooks } from "../store/bookSlice";
+
+export type AddBookInput = {
+  title: string;
+  author: string;
+  description: string;
+  yearPublished: number;
+  category: string;
+  coverImage?: File | null;
+  language?: string;
+  status?: "Available" | "Borrowed";
+};
 
 export function useManageBooks() {
-  const [books, setBooks] = useState<Book[]>(mockBooks);
+  const dispatch = useAppDispatch();
+  const { books, isLoadingBooks, isAddingBook, booksError } = useAppSelector(
+    (state) => state.books
+  );
 
-  const addBook = (newBook: Omit<Book, "id">) => {
-    const bookToAdd: Book = {
-      ...newBook,
-      id: Date.now().toString(),
-    };
+  const refreshBooks = useCallback(async () => {
+    return await dispatch(fetchBooks()).unwrap();
+  }, [dispatch]);
 
-    setBooks((currentBooks) => [bookToAdd, ...currentBooks]);
-  };
+  const addBook = useCallback(
+  async (book: AddBookInput) => {
+    const formData = new FormData();
 
-  const deleteBook = (bookId: string) => {
-    setBooks((currentBooks) =>
-      currentBooks.filter((book) => book.id !== bookId)
-    );
-  };
+    formData.append("title", book.title);
+    formData.append("author", book.author);
+    formData.append("description", book.description);
+    formData.append("yearPublished", String(book.yearPublished));
+    formData.append("genre", book.category);
+    formData.append("language", book.language ?? "ENGLISH");
+
+    if (book.coverImage) {
+      formData.append("coverImage", book.coverImage);
+    }
+
+    return await dispatch(addBookToLibrary(formData)).unwrap();
+  },
+  [dispatch]
+);
+
+  const searchForBooks = useCallback(
+    async (query: string) => {
+      return await dispatch(searchBooks(query)).unwrap();
+    },
+    [dispatch]
+  );
 
   return {
     books,
+    isLoadingBooks,
+    isAddingBook,
+    booksError,
+    refreshBooks,
     addBook,
-    deleteBook,
+    searchForBooks,
   };
 }
