@@ -1,4 +1,5 @@
 import type { Book } from "../../../types/book";
+import type { CopyAvailability } from "../../../types/copyAvailability";
 import styles from "./BookDetailsCard.module.css";
 
 type BookDetailsCardProps = {
@@ -7,6 +8,7 @@ type BookDetailsCardProps = {
   onBorrow: (book: Book) => void;
   error?: string | null;
   isSubmitting?: boolean;
+  copyAvailability?: CopyAvailability;
 };
 
 export default function BookDetailsCard({
@@ -15,7 +17,25 @@ export default function BookDetailsCard({
   onBorrow,
   error,
   isSubmitting = false,
+  copyAvailability,
 }: BookDetailsCardProps) {
+  const apiSaysNoCopies =
+    typeof book.copiesAvailable === "number" && book.copiesAvailable <= 0;
+  const checking =
+    copyAvailability === undefined || copyAvailability === "loading";
+  const probeSaysAvailable = copyAvailability === "available";
+  const canBorrow = !apiSaysNoCopies && probeSaysAvailable;
+  const borrowDisabled = isSubmitting || checking || !canBorrow;
+  const borrowLabel = isSubmitting
+    ? "Borrowing..."
+    : apiSaysNoCopies
+      ? "No copy available"
+      : checking
+        ? "Checking…"
+        : canBorrow
+          ? "Borrow Book"
+          : "No copy available";
+
   return (
     <div className={styles.overlay} onClick={onClose}>
       <section
@@ -70,12 +90,12 @@ export default function BookDetailsCard({
             <button
               type="button"
               onClick={() => onBorrow(book)}
-              disabled={isSubmitting}
+              disabled={borrowDisabled}
               className={`${styles.borrowButton} ${
-                isSubmitting ? styles.borrowButtonDisabled : ""
+                borrowDisabled ? styles.borrowButtonDisabled : ""
               }`}
             >
-              {isSubmitting ? "Borrowing..." : "Borrow Book"}
+              {borrowLabel}
             </button>
           </div>
         </div>

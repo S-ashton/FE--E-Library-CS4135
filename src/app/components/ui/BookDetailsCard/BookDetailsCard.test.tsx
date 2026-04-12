@@ -26,6 +26,7 @@ describe('BookDetailsCard', () => {
         book={sampleBook}
         onClose={onClose}
         onBorrow={onBorrow}
+        copyAvailability="available"
       />
     )
 
@@ -46,8 +47,23 @@ describe('BookDetailsCard', () => {
         onClose={() => {}}
         onBorrow={() => {}}
         error="Borrow failed"
+        copyAvailability="available"
       />
     )
     expect(screen.getByText('Borrow failed')).toBeInTheDocument()
+  })
+
+  it('disables borrow when search reports zero available copies', () => {
+    render(
+      <BookDetailsCard
+        book={{ ...sampleBook, copiesAvailable: 0 }}
+        onClose={() => {}}
+        onBorrow={() => {}}
+        copyAvailability="available"
+      />
+    )
+    expect(
+      screen.getByRole('button', { name: /no copy available/i })
+    ).toBeDisabled()
   })
 })

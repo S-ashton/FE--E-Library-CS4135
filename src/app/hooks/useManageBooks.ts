@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "./reduxHooks";
 import { fetchBooks, addBookToLibrary } from "../store/bookSlice";
+import type { BookInventoryStatus } from "../types/book";
 export type AddBookInput = {
   title: string;
   author: string;
@@ -9,7 +10,7 @@ export type AddBookInput = {
   category: string;
   coverImage?: File | null;
   language?: string;
-  status?: "Available" | "Borrowed";
+  status?: BookInventoryStatus | "Borrowed";
 };
 export function useManageBooks() {
   const dispatch = useAppDispatch();

@@ -54,7 +54,7 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 700px;
+  min-width: 880px;
 }
 
 .tableHeadRow {
@@ -115,6 +115,7 @@
   border-radius: 999px;
   font-size: 0.9rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .available {
@@ -125,6 +126,67 @@
 .borrowed {
   background: #fee2e2;
   color: #b91c1c;
+}
+
+.allBorrowed {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.checking {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.unavailable {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.addCopyBtn {
+  min-width: 36px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.addCopyBtn:hover:not(:disabled) {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+}
+
+.addCopyBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.addCopyHeadCell {
+  width: 88px;
+  text-align: center;
+}
+
+.copiesHeadCell {
+  width: 72px;
+  text-align: right;
+}
+
+.copiesCell {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: #334155;
+}
+
+.addCopyCell {
+  padding: 10px 12px;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .coverThumb {
@@ -186,6 +248,6 @@
   }
 
   .table {
-    min-width: 620px;
+    min-width: 720px;
   }
 }

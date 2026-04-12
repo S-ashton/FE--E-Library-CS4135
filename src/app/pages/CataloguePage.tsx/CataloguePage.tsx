@@ -9,12 +9,12 @@ import { Book } from "../../types/book";
 import { useLoanHistory } from "../../hooks/useLoanHistory";
 import { useRequestLoan } from "../../hooks/useRequestLoan";
 import { useToast } from "../../hooks/useToast";
-import { getAvailableCopy } from "../../store/bookSlice";
-import { useAppDispatch } from "../../hooks/reduxHooks";
 import { resolveCatalogueBooksTableState } from "../../utils/bookSearchFilterHelpers";
+import { catalogueRowInventoryStatus } from "../../utils/bookInventoryStatusFromProbe";
+import { useBookCopyAvailability } from "../../hooks/useBookCopyAvailability";
 
 export default function CataloguePage() {
-  const { history, error, refreshHistory } = useLoanHistory();
+  const { error, refreshHistory } = useLoanHistory();
   const { requestLoan, isBorrowing } = useRequestLoan();
   const { books, refreshBooks, isLoadingBooks, booksError } = useManageBooks();
   const { isSearchingBooks, searchForBooks } = useSearchBooks();
@@ -24,34 +24,30 @@ export default function CataloguePage() {
   });
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const { showSuccess, showError } = useToast();
-  const dispatch = useAppDispatch();
+  const [probeRefresh, setProbeRefresh] = useState(0);
+
+  const availabilityMap = useBookCopyAvailability(
+    books.map((b) => b.id),
+    probeRefresh
+  );
 
   useEffect(() => {
-    refreshHistory();
-    refreshBooks();
+    void Promise.all([refreshHistory(), refreshBooks()]).catch(() => {});
   }, [refreshHistory, refreshBooks]);
 
-  const booksWithLoanStatus = useMemo<Book[]>(() => {
-    return books.map((book) => {
-      const hasActiveLoan = history.some(
-        (loan) => loan.bookId === book.id.toString() && loan.status === "ACTIVE"
-      );
-
-      return {
-        ...book,
-        status: hasActiveLoan ? "Borrowed" : "Available",
-      };
-    });
-  }, [books, history]);
+  const booksWithInventory = useMemo<Book[]>(() => {
+    return books.map((book) => ({
+      ...book,
+      status: catalogueRowInventoryStatus(book, availabilityMap[book.id]),
+    }));
+  }, [books, availabilityMap]);
 
   const handleBorrowBook = async (book: Book) => {
     try {
-      const availableCopy = await dispatch(getAvailableCopy(book.id)).unwrap();
-      console.log("availableCopy", availableCopy);
-
-      await requestLoan(availableCopy.id);
+      await requestLoan(book.id.toString());
       setSelectedBook(null);
       showSuccess("Book borrowed successfully!");
+      setProbeRefresh((k) => k + 1);
       await refreshHistory();
       await refreshBooks();
     } catch (err) {
@@ -63,7 +59,7 @@ export default function CataloguePage() {
   const booksTableState = resolveCatalogueBooksTableState({
     isLoadingBooks,
     booksError,
-    bookCount: booksWithLoanStatus.length,
+    bookCount: booksWithInventory.length,
     hasActiveSearch: catalogueSearch.hasActiveSearch,
   });
 
@@ -107,7 +103,7 @@ export default function CataloguePage() {
       <section>
         <BookTable
           title="Book Catalogue"
-          books={booksWithLoanStatus}
+          books={booksWithInventory}
           mode="public"
           state={booksTableState}
           search={
@@ -135,6 +131,7 @@ export default function CataloguePage() {
             onBorrow={handleBorrowBook}
             isSubmitting={isBorrowing}
             error={error}
+            copyAvailability={availabilityMap[selectedBook.id]}
           />
         )}
       </section>

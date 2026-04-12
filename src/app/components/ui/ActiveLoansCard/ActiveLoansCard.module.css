@@ -61,8 +61,47 @@
   padding: 16px;
   background: #ffffff;
   display: grid;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
+}
+
+.loanCardTop {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.coverThumb {
+  width: 56px;
+  aspect-ratio: 2 / 3;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #e2e8f0;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.coverImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.noCover {
+  font-size: 0.55rem;
+  color: #64748b;
+  text-align: center;
+  padding: 4px;
+  line-height: 1.1;
+}
+
+.loanCardBody {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
 }
 
 .loanTitle {

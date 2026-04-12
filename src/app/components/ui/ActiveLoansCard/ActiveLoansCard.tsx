@@ -9,6 +9,7 @@ type ActiveLoansCardProps = {
     dueDate: string;
     status: string;
     fineAmount: number | null;
+    coverImageUrl?: string;
   }>;
   state: "empty" | "loading" | "populated" | "error";
   isReturning?: boolean;
@@ -65,18 +66,33 @@ export default function ActiveLoansCard({
           <div className={styles.loansGridWrapper}>
             {borrowedBooks.map((book) => (
               <div key={book.loanId} className={styles.loanCard}>
-                <h3 className={styles.loanTitle}>{book.title}</h3>
-                <p className={styles.loanMeta}>{book.author}</p>
-                <p className={styles.loanMeta}>
-                  Due Date: {new Date(book.dueDate).toLocaleDateString()}
-                </p>
-                <p className={styles.loanMeta}>Status: {book.status}</p>
+                <div className={styles.loanCardTop}>
+                  <div className={styles.coverThumb}>
+                    {book.coverImageUrl ? (
+                      <img
+                        src={book.coverImageUrl}
+                        alt={`${book.title} cover`}
+                        className={styles.coverImage}
+                      />
+                    ) : (
+                      <span className={styles.noCover}>No Cover</span>
+                    )}
+                  </div>
+                  <div className={styles.loanCardBody}>
+                    <h3 className={styles.loanTitle}>{book.title}</h3>
+                    <p className={styles.loanMeta}>{book.author}</p>
+                    <p className={styles.loanMeta}>
+                      Due Date: {new Date(book.dueDate).toLocaleDateString()}
+                    </p>
+                    <p className={styles.loanMeta}>Status: {book.status}</p>
 
-                {book.fineAmount !== null && book.fineAmount > 0 && (
-                  <p className={styles.fineText}>
-                    Fine Amount: €{book.fineAmount.toFixed(2)}
-                  </p>
-                )}
+                    {book.fineAmount !== null && book.fineAmount > 0 && (
+                      <p className={styles.fineText}>
+                        Fine Amount: €{book.fineAmount.toFixed(2)}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
                 <button
                   type="button"

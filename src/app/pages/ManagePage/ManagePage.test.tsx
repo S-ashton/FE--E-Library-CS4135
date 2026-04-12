@@ -14,13 +14,8 @@ vi.mock('../../hooks/useManageBooks', () => ({
   }),
 }))
 
-vi.mock('../../hooks/useLoanHistory', () => ({
-  useLoanHistory: () => ({
-    history: [],
-    isLoadingHistory: false,
-    error: null,
-    refreshHistory: vi.fn().mockResolvedValue(undefined),
-  }),
+vi.mock('../../hooks/useBookCopyAvailability', () => ({
+  useBookCopyAvailability: () => ({}),
 }))
 
 describe('ManagePage', () => {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import AddBookForm from "../../components/ui/AddBookForm/AddBookForm";
 import BookCatalogueSearchPanel from "../../components/ui/BookCatalogueSearchPanel/BookCatalogueSearchPanel";
 import BookTable from "../../components/ui/BookTable/BookTable";
@@ -7,11 +7,15 @@ import { useBookCatalogueSearch } from "../../hooks/useBookCatalogueSearch";
 import { useManageBooks } from "../../hooks/useManageBooks";
 import { useSearchBooks } from "../../hooks/useSearchBooks";
 import { Book } from "../../types/book";
-import { useLoanHistory } from "../../hooks/useLoanHistory";
 import { useToast } from "../../hooks/useToast";
 import { resolveCatalogueBooksTableState } from "../../utils/bookSearchFilterHelpers";
+import { bookInventoryStatusFromProbe } from "../../utils/bookInventoryStatusFromProbe";
+import { useBookCopyAvailability } from "../../hooks/useBookCopyAvailability";
+import { useAppDispatch } from "../../hooks/reduxHooks";
+import { addBookCopy } from "../../store/bookSlice";
 
 export default function ManagePage() {
+  const dispatch = useAppDispatch();
   const {
     books,
     addBook,
@@ -19,7 +23,6 @@ export default function ManagePage() {
     isLoadingBooks,
     booksError,
   } = useManageBooks();
-  const { history, refreshHistory } = useLoanHistory();
   const { showSuccess, showError } = useToast();
 
   const { isSearchingBooks, searchForBooks } = useSearchBooks();
@@ -28,30 +31,54 @@ export default function ManagePage() {
     searchForBooks,
   });
 
+  const [addingCopyBookId, setAddingCopyBookId] = useState<number | null>(null);
+  const [copyAvailBump, setCopyAvailBump] = useState(0);
+
+  const availabilityMap = useBookCopyAvailability(
+    books.map((b) => b.id),
+    copyAvailBump
+  );
+
   useEffect(() => {
-    refreshBooks();
-    refreshHistory();
-  }, [refreshBooks, refreshHistory]);
+    void refreshBooks().catch(() => {});
+  }, [refreshBooks]);
 
-  const booksWithLoanStatus = useMemo<Book[]>(() => {
+  const booksWithInventory = useMemo<Book[]>(() => {
     return books.map((book) => {
-      const hasActiveLoan = history.some(
-        (loan) => loan.bookId === book.id.toString() && loan.status === "ACTIVE"
-      );
-
-      return {
-        ...book,
-        status: hasActiveLoan ? "Borrowed" : "Available",
-      };
+      const probe = availabilityMap[book.id] ?? "loading";
+      const status = bookInventoryStatusFromProbe(probe);
+      const statusLabel =
+        probe === "available" && book.copiesAvailable != null
+          ? `Available copies: ${book.copiesAvailable}`
+          : undefined;
+      return { ...book, status, statusLabel };
     });
-  }, [books, history]);
+  }, [books, availabilityMap]);
 
   const booksTableState = resolveCatalogueBooksTableState({
     isLoadingBooks,
     booksError,
-    bookCount: booksWithLoanStatus.length,
+    bookCount: booksWithInventory.length,
     hasActiveSearch: catalogueSearch.hasActiveSearch,
   });
+
+  const handleAddCopy = useCallback(
+    async (book: Book) => {
+      setAddingCopyBookId(book.id);
+      try {
+        await dispatch(addBookCopy(book.id)).unwrap();
+        await refreshBooks();
+        setCopyAvailBump((k) => k + 1);
+        showSuccess("Copy added to the catalogue.");
+      } catch (err) {
+        console.error("Failed to add copy:", err);
+        showError("Could not add a copy. Please try again.");
+      } finally {
+        setAddingCopyBookId(null);
+      }
+    },
+    [dispatch, refreshBooks, showError, showSuccess]
+  );
 
   const {
     title,
@@ -76,6 +103,7 @@ export default function ManagePage() {
       try {
         await addBook(book);
         await refreshBooks();
+        setCopyAvailBump((k) => k + 1);
         showSuccess("Book added successfully!");
       } catch (err) {
         console.error("Failed to add book:", err);
@@ -125,7 +153,7 @@ export default function ManagePage() {
       <section>
         <BookTable
           title="Library Catalogue"
-          books={booksWithLoanStatus}
+          books={booksWithInventory}
           mode="admin"
           state={booksTableState}
           search={
@@ -143,6 +171,8 @@ export default function ManagePage() {
               isSearching={isSearchingBooks}
             />
           }
+          onAddCopy={handleAddCopy}
+          addingCopyBookId={addingCopyBookId}
         />
       </section>
 

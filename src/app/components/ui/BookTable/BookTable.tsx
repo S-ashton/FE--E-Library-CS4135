@@ -3,6 +3,23 @@ import type { CatalogueBooksTableViewState } from '../../../utils/bookSearchFilt
 import styles from './BookTable.module.css'
 import type React from 'react'
 
+function statusBadgeClass(status: Book['status']): string {
+  switch (status) {
+    case 'Available':
+      return styles.available
+    case 'Borrowed':
+      return styles.borrowed
+    case 'All copies borrowed':
+      return styles.allBorrowed
+    case 'Checking…':
+      return styles.checking
+    case 'Unavailable':
+      return styles.unavailable
+    default:
+      return styles.unavailable
+  }
+}
+
 type BookTableProps = {
   title: string
   books: Book[]
@@ -11,6 +28,8 @@ type BookTableProps = {
   search?: React.ReactNode
   errorMessage?: string
   onSelectBook?: (book: Book) => void
+  onAddCopy?: (book: Book) => void | Promise<void>
+  addingCopyBookId?: number | null
 }
 
 function BookTable({
@@ -21,7 +40,11 @@ function BookTable({
   search,
   errorMessage,
   onSelectBook,
+  onAddCopy,
+  addingCopyBookId = null,
 }: BookTableProps) {
+  const showAddCopy = Boolean(onAddCopy)
+  const showCopyCounts = mode === 'admin'
   const countDisplay = state === 'loading' ? '…' : `${books.length} books`
 
   function wrapInCatalogueTableShell(body: React.ReactNode) {
@@ -83,7 +106,17 @@ function BookTable({
                 <th className={styles.headCell}>Author</th>
                 <th className={styles.headCell}>Category</th>
                 <th className={styles.headCell}>Year</th>
+                {showCopyCounts ? (
+                  <th className={`${styles.headCell} ${styles.copiesHeadCell}`}>
+                    Copies
+                  </th>
+                ) : null}
                 <th className={styles.headCell}>Status</th>
+                {showAddCopy ? (
+                  <th className={`${styles.headCell} ${styles.addCopyHeadCell}`}>
+                    Add copy
+                  </th>
+                ) : null}
               </tr>
             </thead>
 
@@ -97,6 +130,7 @@ function BookTable({
                     }
                   }}
                   className={`${styles.row} ${mode === 'public' ? styles.clickableRow : ''}`}
+                  style={mode === 'admin' ? { cursor: 'default' } : undefined}
                 >
                   <td className={styles.coverCell}>
                     <div className={styles.coverThumb}>
@@ -118,15 +152,34 @@ function BookTable({
                     <span className={styles.categoryBadge}>{book.category}</span>
                   </td>
                   <td className={`${styles.cell} ${styles.yearCell}`}>{book.yearPublished}</td>
+                  {showCopyCounts ? (
+                    <td className={`${styles.cell} ${styles.copiesCell}`}>
+                      {book.totalCopies != null ? book.totalCopies : '—'}
+                    </td>
+                  ) : null}
                   <td className={styles.cell}>
                     <span
-                      className={`${styles.statusBadge} ${
-                        book.status === 'Available' ? styles.available : styles.borrowed
-                      }`}
+                      className={`${styles.statusBadge} ${statusBadgeClass(book.status)}`}
                     >
-                      {book.status}
+                      {book.statusLabel ?? book.status}
                     </span>
                   </td>
+                  {showAddCopy ? (
+                    <td
+                      className={`${styles.cell} ${styles.addCopyCell}`}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <button
+                        type="button"
+                        className={styles.addCopyBtn}
+                        aria-label={`Add copy of ${book.title}`}
+                        disabled={addingCopyBookId === book.id}
+                        onClick={() => void onAddCopy?.(book)}
+                      >
+                        +
+                      </button>
+                    </td>
+                  ) : null}
                 </tr>
               ))}
             </tbody>

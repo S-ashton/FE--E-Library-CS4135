@@ -7,6 +7,7 @@ import authReducer from '../app/store/authSlice'
 import loanReducer from '../app/store/loanSlice'
 import usersReducer from '../app/store/usersSlice'
 import bookReducer from '../app/store/bookSlice'
+import recommendationReducer from '../app/store/recommendationSlice'
 import type { RootState } from '../app/store/store'
 import { ToastProvider } from '../app/context/ToastProvider'
 
@@ -25,6 +26,7 @@ export function renderWithProviders(
       loans: loanReducer,
       users: usersReducer,
       books: bookReducer,
+      recommendations: recommendationReducer,
     },
     preloadedState: preloadedState as RootState,
   })

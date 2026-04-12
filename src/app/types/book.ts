@@ -1,13 +1,28 @@
+export type BookInventoryStatus =
+  | "Available"
+  | "All copies borrowed"
+  | "Checking…"
+  | "Unavailable";
+
 export type Book = {
   id: number
   title: string
   author: string
   category: string
   yearPublished: number
-  status: "Available" | "Borrowed"
+  status: BookInventoryStatus | "Borrowed"
+  copiesAvailable?: number
+  totalCopies?: number
+  statusLabel?: string
   description?: string
   language: string
   coverImageUrl?: string
+}
+
+export type BookCopyDTO = {
+  id: number
+  bookId: number
+  status: string
 }
 
 export type BookDTO = {
@@ -19,6 +34,8 @@ export type BookDTO = {
   genre: string
   coverImageUrl: string | null
   language: string
+  copiesAvailable?: number
+  totalCopies?: number
 }
 
 export function toBook(dto: BookDTO): Book {
@@ -31,6 +48,8 @@ export function toBook(dto: BookDTO): Book {
     category: dto.genre,
     language: dto.language,
     coverImageUrl: dto.coverImageUrl ?? undefined,
-    status: "Available",
+    copiesAvailable: dto.copiesAvailable,
+    totalCopies: dto.totalCopies,
+    status: "Checking…",
   }
 }

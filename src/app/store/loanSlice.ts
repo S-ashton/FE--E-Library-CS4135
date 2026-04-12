@@ -3,7 +3,6 @@ import axios from 'axios'
 import apiClient from '../services/apiClient'
 import type { LoanDTO } from '../types/loan'
 
-// Async thunk for borrowing a book using the bookId string posting to /api/loans
 export const borrowBook = createAsyncThunk(
     'loans/borrowBook',
     async (bookId: string, { rejectWithValue }) => {
@@ -19,7 +18,6 @@ export const borrowBook = createAsyncThunk(
     }
 )
 
-// Async thunk for fetching loan history from /api/loans/history
 export const fetchLoanHistory = createAsyncThunk(
     'loans/fetchLoanHistory',
     async (_, { rejectWithValue }) => {
@@ -35,8 +33,6 @@ export const fetchLoanHistory = createAsyncThunk(
     }
 )
 
-// Async thunk for returning a loan using the loanId string 
-// posting to /api/loans/{id}/return
 export const returnBook = createAsyncThunk(
     'loans/returnBook',
     async (loanId: string, { rejectWithValue }) => {
