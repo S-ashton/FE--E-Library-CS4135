@@ -1,5 +1,5 @@
 import { startTransition, useEffect, useMemo, useRef, useState } from "react";
-import RecDashboard from "../../components/ui/RecDashboard";
+import RecDashboard from "../../components/ui/recDashboard";
 import { useManageBooks } from "../../hooks/useManageBooks";
 import { Book, type BookDTO, toBook } from "../../types/book";
 import BookDetailsCard from "../../components/ui/BookDetailsCard/BookDetailsCard";
