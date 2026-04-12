@@ -1,9 +1,7 @@
 import { useEffect, useMemo } from "react";
 import AddBookForm from "../../components/ui/AddBookForm/AddBookForm";
 import BookTable from "../../components/ui/BookTable/BookTable";
-import DeleteCheck from "../../components/ui/DeleteCheck/DeleteCheck";
 import { useAddBook } from "../../hooks/useAddBook";
-import { useDeleteBook } from "../../hooks/useDeleteBooks";
 import { useManageBooks } from "../../hooks/useManageBooks";
 import { Book } from "../../types/book";
 import { useLoanHistory } from "../../hooks/useLoanHistory";
@@ -12,13 +10,11 @@ import { useToast } from "../../hooks/useToast";
 export default function ManagePage() {
   const {
     books,
-    deleteBook,
     addBook,
     refreshBooks,
     isLoadingBooks,
     booksError,
   } = useManageBooks();
-
   const { history, refreshHistory } = useLoanHistory();
   const { showSuccess, showError } = useToast();
 
@@ -81,23 +77,6 @@ export default function ManagePage() {
     },
   });
 
-  const {
-    bookToDelete,
-    requestDelete,
-    cancelDelete,
-    confirmDelete,
-  } = useDeleteBook({
-    onDelete: async (bookId) => {
-      try {
-        await deleteBook(bookId);
-        await refreshBooks();
-        showSuccess("Book deleted successfully!");
-      } catch (err) {
-        console.error("Failed to delete book:", err);
-        showError("Failed to delete book. Please try again.");
-      }
-    },
-  });
 
   return (
     <div
@@ -142,7 +121,6 @@ export default function ManagePage() {
           books={booksWithLoanStatus}
           mode="admin"
           state={booksTableState}
-          onDeleteBook={requestDelete}
         />
       </section>
 
@@ -167,14 +145,6 @@ export default function ManagePage() {
           onSubmit={handleSubmit}
         />
       </section>
-
-      {bookToDelete && (
-        <DeleteCheck
-          bookTitle={bookToDelete.title}
-          onCancel={cancelDelete}
-          onConfirm={confirmDelete}
-        />
-      )}
     </div>
   );
 }

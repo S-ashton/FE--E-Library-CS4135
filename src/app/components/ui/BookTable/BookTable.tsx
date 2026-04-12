@@ -1,4 +1,3 @@
-import type { MouseEvent } from 'react'
 import type { Book } from '../../../types/book'
 import styles from './BookTable.module.css'
 
@@ -9,7 +8,6 @@ type BookTableProps = {
   state: 'loading' | 'empty' | 'error' | 'populated'
   errorMessage?: string
   onSelectBook?: (book: Book) => void
-  onDeleteBook?: (book: Book) => void
 }
 
 function BookTable({
@@ -19,10 +17,7 @@ function BookTable({
   state,
   errorMessage,
   onSelectBook,
-  onDeleteBook,
 }: BookTableProps) {
-  const showActions = mode === 'admin'
-
   switch (state) {
     case 'empty':
       return (
@@ -68,7 +63,6 @@ function BookTable({
                   <th className={styles.headCell}>Category</th>
                   <th className={styles.headCell}>Year</th>
                   <th className={styles.headCell}>Status</th>
-                  {showActions && <th className={styles.headCell}>Actions</th>}
                 </tr>
               </thead>
 
@@ -113,20 +107,7 @@ function BookTable({
                       </span>
                     </td>
 
-                    {showActions && (
-                      <td className={styles.cell}>
-                        <button
-                          type="button"
-                          onClick={(e: MouseEvent<HTMLButtonElement>) => {
-                            e.stopPropagation()
-                            onDeleteBook?.(book)
-                          }}
-                          className={styles.deleteButton}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    )}
+                    
                   </tr>
                 ))}
               </tbody>

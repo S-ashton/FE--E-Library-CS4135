@@ -12,18 +12,6 @@ describe('ManagePage', () => {
     ).toBeInTheDocument()
   })
 
-  it('renders the book catalogue section for staff', () => {
-    renderWithProviders(<ManagePage />)
-    expect(
-      screen.getByText('Library Catalogue')
-    ).toBeInTheDocument()
-
-    expect(screen.getByText(/actions/i)).toBeInTheDocument()
-    expect(screen.getAllByRole(
-        'button', 
-        { name: /delete/i }).length).toBeGreaterThan(0)
-  })
-
   it('renders the add book section', () => {
     renderWithProviders(<ManagePage />)
     expect(
