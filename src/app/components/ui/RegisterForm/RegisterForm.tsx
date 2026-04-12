@@ -1,70 +1,42 @@
 import Spinner from "../Spinner";
 import type { FormEvent } from "react";
-import styles from "./LoginForm.module.css";
+import styles from "./RegisterForm.module.css";
 
-type LoginFormProps = {
+type RegisterFormProps = {
   email: string;
   password: string;
   error?: string | null;
+  emailFieldError?: string;
+  passwordFieldErrors?: string[];
   isSubmitting?: boolean;
   onEmailChange: (value: string) => void;
   onPasswordChange: (value: string) => void;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
-  onTrySignInAgain?: () => void;
-  onChooseRegister?: () => void;
+  onBackToSignIn?: () => void;
 };
 
-export default function LoginForm({
+export default function RegisterForm({
   email,
   password,
   error,
+  emailFieldError = "",
+  passwordFieldErrors = [],
   isSubmitting = false,
   onEmailChange,
   onPasswordChange,
   onSubmit,
-  onTrySignInAgain,
-  onChooseRegister,
-}: LoginFormProps) {
-  const showRecovery =
-    Boolean(error) && (onTrySignInAgain || onChooseRegister);
-
+  onBackToSignIn,
+}: RegisterFormProps) {
   return (
     <form onSubmit={onSubmit} className={styles.form}>
       {error && <div className={styles.errorBox}>{error}</div>}
 
-      {showRecovery && (
-        <p className={styles.recoveryHint}>
-          If you already have an account, check your email and password.{" "}
-          {onTrySignInAgain && (
-            <button
-              type="button"
-              className={styles.linkButton}
-              onClick={onTrySignInAgain}
-            >
-              Try signing in again
-            </button>
-          )}
-          {onTrySignInAgain && onChooseRegister && (
-            <span className={styles.recoverySep}> · </span>
-          )}
-          {onChooseRegister && (
-            <button
-              type="button"
-              className={styles.linkButton}
-              onClick={onChooseRegister}
-            >
-              Create an account
-            </button>
-          )}
-        </p>
-      )}
-
       <div className={styles.field}>
-        <label htmlFor="login-email" className={styles.label}>
+        <label htmlFor="register-email" className={styles.label}>
           Email
         </label>
         <input
-          id="login-email"
+          id="register-email"
           type="email"
           value={email}
           onChange={(e) => onEmailChange(e.target.value)}
@@ -73,22 +45,32 @@ export default function LoginForm({
           disabled={isSubmitting}
           className={styles.input}
         />
+        {emailFieldError && (
+          <span className={styles.fieldError}>{emailFieldError}</span>
+        )}
       </div>
 
       <div className={styles.field}>
-        <label htmlFor="login-password" className={styles.label}>
+        <label htmlFor="register-password" className={styles.label}>
           Password
         </label>
         <input
-          id="login-password"
+          id="register-password"
           type="password"
           value={password}
           onChange={(e) => onPasswordChange(e.target.value)}
-          placeholder="Enter your password"
-          autoComplete="current-password"
+          placeholder="Choose a password"
+          autoComplete="new-password"
           disabled={isSubmitting}
           className={styles.input}
         />
+        {passwordFieldErrors.length > 0 && (
+          <ul className={styles.passwordErrorList}>
+            {passwordFieldErrors.map((err) => (
+              <li key={err}>{err}</li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <button
@@ -99,18 +81,18 @@ export default function LoginForm({
         }`}
       >
         {isSubmitting && <Spinner size={16} />}
-        {isSubmitting ? "Signing in..." : "Sign in"}
+        {isSubmitting ? "Registering..." : "Create account"}
       </button>
 
-      {!error && onChooseRegister && (
+      {onBackToSignIn && (
         <p className={styles.footerHint}>
-          New here?{" "}
+          Already have an account?{" "}
           <button
             type="button"
             className={styles.linkButton}
-            onClick={onChooseRegister}
+            onClick={onBackToSignIn}
           >
-            Create an account
+            Sign in
           </button>
         </p>
       )}

@@ -14,35 +14,6 @@
   font-size: 0.9rem;
 }
 
-.recoveryHint,
-.footerHint {
-  margin: 0 0 16px;
-  font-size: 0.9rem;
-  color: #475569;
-  line-height: 1.5;
-}
-
-.recoverySep {
-  color: #94a3b8;
-}
-
-.linkButton {
-  display: inline;
-  padding: 0;
-  border: none;
-  background: none;
-  color: #2563eb;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.linkButton:hover {
-  color: #1d4ed8;
-}
-
 .field {
   margin-bottom: 4px;
 }
@@ -52,6 +23,20 @@
   font-size: 0.9rem;
   font-weight: 600;
   color: #334155;
+}
+
+.fieldError {
+  display: block;
+  font-size: 0.85rem;
+  color: #b91c1c;
+  margin-top: 4px;
+}
+
+.passwordErrorList {
+  margin: 8px 0 0;
+  padding-left: 1.25rem;
+  font-size: 0.85rem;
+  color: #b91c1c;
 }
 
 .input {
@@ -98,4 +83,28 @@
 .submitButtonDisabled {
   background: #93c5fd;
   cursor: not-allowed;
+}
+
+.footerHint {
+  margin: 16px 0 0;
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.linkButton {
+  display: inline;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #2563eb;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.linkButton:hover {
+  color: #1d4ed8;
 }
