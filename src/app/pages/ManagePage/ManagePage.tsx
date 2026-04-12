@@ -1,11 +1,15 @@
 import { useEffect, useMemo } from "react";
 import AddBookForm from "../../components/ui/AddBookForm/AddBookForm";
+import BookCatalogueSearchPanel from "../../components/ui/BookCatalogueSearchPanel/BookCatalogueSearchPanel";
 import BookTable from "../../components/ui/BookTable/BookTable";
 import { useAddBook } from "../../hooks/useAddBook";
+import { useBookCatalogueSearch } from "../../hooks/useBookCatalogueSearch";
 import { useManageBooks } from "../../hooks/useManageBooks";
+import { useSearchBooks } from "../../hooks/useSearchBooks";
 import { Book } from "../../types/book";
 import { useLoanHistory } from "../../hooks/useLoanHistory";
 import { useToast } from "../../hooks/useToast";
+import { resolveCatalogueBooksTableState } from "../../utils/bookSearchFilterHelpers";
 
 export default function ManagePage() {
   const {
@@ -17,6 +21,12 @@ export default function ManagePage() {
   } = useManageBooks();
   const { history, refreshHistory } = useLoanHistory();
   const { showSuccess, showError } = useToast();
+
+  const { isSearchingBooks, searchForBooks } = useSearchBooks();
+  const catalogueSearch = useBookCatalogueSearch({
+    refreshBooks,
+    searchForBooks,
+  });
 
   useEffect(() => {
     refreshBooks();
@@ -36,14 +46,12 @@ export default function ManagePage() {
     });
   }, [books, history]);
 
-  const booksTableState =
-    isLoadingBooks
-      ? "loading"
-      : booksError
-      ? "error"
-      : booksWithLoanStatus.length === 0
-      ? "empty"
-      : "populated";
+  const booksTableState = resolveCatalogueBooksTableState({
+    isLoadingBooks,
+    booksError,
+    bookCount: booksWithLoanStatus.length,
+    hasActiveSearch: catalogueSearch.hasActiveSearch,
+  });
 
   const {
     title,
@@ -76,7 +84,6 @@ export default function ManagePage() {
       }
     },
   });
-
 
   return (
     <div
@@ -121,6 +128,21 @@ export default function ManagePage() {
           books={booksWithLoanStatus}
           mode="admin"
           state={booksTableState}
+          search={
+            <BookCatalogueSearchPanel
+              idPrefix="manage"
+              searchQuery={catalogueSearch.searchQuery}
+              onSearchQueryChange={catalogueSearch.setSearchQuery}
+              filterGenre={catalogueSearch.filterGenre}
+              onFilterGenreChange={catalogueSearch.setFilterGenre}
+              filterYear={catalogueSearch.filterYear}
+              onFilterYearChange={catalogueSearch.setFilterYear}
+              filterLanguage={catalogueSearch.filterLanguage}
+              onFilterLanguageChange={catalogueSearch.setFilterLanguage}
+              onSubmitSearch={catalogueSearch.runCatalogueSearch}
+              isSearching={isSearchingBooks}
+            />
+          }
         />
       </section>
 

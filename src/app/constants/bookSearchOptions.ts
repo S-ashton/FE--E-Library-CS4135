@@ -1,0 +1,31 @@
+export const BOOK_SEARCH_GENRES = [
+  "ROMANCE",
+  "FANTASY",
+  "MEMOIR",
+  "CHILDREN",
+  "YA",
+  "TRUECRIME",
+  "SCIFI",
+  "THRILLER",
+  "SELFHELP",
+  "HISTORICALFICTION",
+  "HISTORICALNF",
+  "NONFICTION",
+] as const;
+
+export const BOOK_SEARCH_LANGUAGES = [
+  "CHINESE",
+  "SPANISH",
+  "ENGLISH",
+  "HINDI",
+  "ARABIC",
+  "BENGALI",
+  "PORTUGUESE",
+  "RUSSIAN",
+  "JAPANESE",
+  "PUNJABI",
+  "GERMAN",
+  "FRENCH",
+  "POLISH",
+  "ITALIAN",
+] as const;

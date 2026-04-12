@@ -2,10 +2,12 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { Book } from "../types/book";
 import type { BookDTO } from "../types/book";
 import { toBook } from "../types/book";
+import type { BookSearchFilters } from "../types/bookSearch";
+import { buildBookSearchRequestParams } from "../utils/buildBookSearchRequestParams";
+import { normalizeBookSearchPayload } from "../utils/normalizeBookSearchPayload";
 import apiClient from "../services/apiClient";
 import axios from "axios";
 
-// Async thunk for adding a book to the library using the bookData object posting to /api/books/addTitle
 export const addBookToLibrary = createAsyncThunk(
   "books/addBookToLibrary",
   async (formData: FormData, { rejectWithValue }) => {
@@ -23,46 +25,44 @@ export const addBookToLibrary = createAsyncThunk(
       return rejectWithValue("An error occurred while adding the book.");
     }
   }
-)
+);
 
-// Async thunk for fetching book details using the bookId string getting from /api/books/{id}
 export const getBookDetails = createAsyncThunk(
-    "books/getBookDetails",
-    async (bookId: string, { rejectWithValue }) => {
-        try {
-            const response = await apiClient.get(`/books/${bookId}`);
-            return response.data;
-        } catch (err: unknown) {
-            if (axios.isAxiosError(err) && err.response?.data?.message) {
-                return rejectWithValue(err.response.data.message);
-            }   
-            return rejectWithValue("An error occured while fetching the book details.");
-        }
+  "books/getBookDetails",
+  async (bookId: string, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.get(`/books/${bookId}`);
+      return response.data;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
+        return rejectWithValue(err.response.data.message);
+      }
+      return rejectWithValue("An error occured while fetching the book details.");
     }
-)
+  }
+);
 
-// Async thunk for fetching book titles by an array of bookIds posting to /api/books/titlesByIds
 export const getBookTitlesByIds = createAsyncThunk(
-    "books/getBookTitlesByIds",
-    async (bookIds: number[], { rejectWithValue }) => { 
-        try {
-            const response = await apiClient.post(`/books/titlesByIds/${bookIds}`);
-            return response.data;
-        } catch (err: unknown) {
-            if (axios.isAxiosError(err) && err.response?.data?.message) {
-                return rejectWithValue(err.response.data.message);
-            }       
-            return rejectWithValue("An error occured while fetching the book titles.");
-        }
+  "books/getBookTitlesByIds",
+  async (bookIds: number[], { rejectWithValue }) => {
+    try {
+      const response = await apiClient.post(`/books/titlesByIds/${bookIds}`);
+      return response.data;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
+        return rejectWithValue(err.response.data.message);
+      }
+      return rejectWithValue("An error occured while fetching the book titles.");
     }
-)
+  }
+);
 
 export const fetchBooks = createAsyncThunk(
   "books/fetchBooks",
   async (_, { rejectWithValue }) => {
     try {
       const response = await apiClient.get("/books/search");
-      return response.data;
+      return normalizeBookSearchPayload(response.data);
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.response?.data?.message) {
         return rejectWithValue(err.response.data.message);
@@ -73,19 +73,20 @@ export const fetchBooks = createAsyncThunk(
 );
 
 export const searchBooks = createAsyncThunk(
-    "books/searchBooks",
-    async (searchTerm: string, { rejectWithValue }) => {
-        try {
-            const response = await apiClient.get(`/books/search?query=${encodeURIComponent(searchTerm)}`);
-            return response.data;
-        } catch (err: unknown) {
-            if (axios.isAxiosError(err) && err.response?.data?.message) {
-                return rejectWithValue(err.response.data.message);
-            }       
-            return rejectWithValue("An error occured while searching for books.");
-        }   
+  "books/searchBooks",
+  async (filters: BookSearchFilters, { rejectWithValue }) => {
+    try {
+      const params = buildBookSearchRequestParams(filters);
+      const response = await apiClient.get("/books/search", { params });
+      return normalizeBookSearchPayload(response.data);
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
+        return rejectWithValue(err.response.data.message);
+      }
+      return rejectWithValue("An error occured while searching for books.");
     }
-)
+  }
+);
 
 export const getAvailableCopy = createAsyncThunk(
   "books/getAvailableCopy",
@@ -103,8 +104,6 @@ export const getAvailableCopy = createAsyncThunk(
     }
   }
 );
-
-
 
 type BooksState = {
   books: Book[];
@@ -134,7 +133,7 @@ const booksSlice = createSlice({
       })
       .addCase(fetchBooks.fulfilled, (state, action) => {
         state.isLoadingBooks = false;
-        state.books = (action.payload as BookDTO[]).map(toBook);
+        state.books = action.payload.map(toBook);
       })
       .addCase(fetchBooks.rejected, (state, action) => {
         state.isLoadingBooks = false;
@@ -162,7 +161,7 @@ const booksSlice = createSlice({
       })
       .addCase(searchBooks.fulfilled, (state, action) => {
         state.isSearchingBooks = false;
-        state.books = (action.payload as BookDTO[]).map(toBook);
+        state.books = action.payload.map(toBook);
       })
       .addCase(searchBooks.rejected, (state, action) => {
         state.isSearchingBooks = false;

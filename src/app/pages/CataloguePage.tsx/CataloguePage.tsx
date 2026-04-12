@@ -1,22 +1,30 @@
 import { useMemo, useState, useEffect } from "react";
+import BookCatalogueSearchPanel from "../../components/ui/BookCatalogueSearchPanel/BookCatalogueSearchPanel";
 import BookDetailsCard from "../../components/ui/BookDetailsCard/BookDetailsCard";
 import BookTable from "../../components/ui/BookTable/BookTable";
+import { useBookCatalogueSearch } from "../../hooks/useBookCatalogueSearch";
 import { useManageBooks } from "../../hooks/useManageBooks";
+import { useSearchBooks } from "../../hooks/useSearchBooks";
 import { Book } from "../../types/book";
 import { useLoanHistory } from "../../hooks/useLoanHistory";
 import { useRequestLoan } from "../../hooks/useRequestLoan";
 import { useToast } from "../../hooks/useToast";
 import { getAvailableCopy } from "../../store/bookSlice";
 import { useAppDispatch } from "../../hooks/reduxHooks";
+import { resolveCatalogueBooksTableState } from "../../utils/bookSearchFilterHelpers";
 
 export default function CataloguePage() {
   const { history, error, refreshHistory } = useLoanHistory();
   const { requestLoan, isBorrowing } = useRequestLoan();
   const { books, refreshBooks, isLoadingBooks, booksError } = useManageBooks();
+  const { isSearchingBooks, searchForBooks } = useSearchBooks();
+  const catalogueSearch = useBookCatalogueSearch({
+    refreshBooks,
+    searchForBooks,
+  });
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const { showSuccess, showError } = useToast();
   const dispatch = useAppDispatch();
- 
 
   useEffect(() => {
     refreshHistory();
@@ -37,29 +45,27 @@ export default function CataloguePage() {
   }, [books, history]);
 
   const handleBorrowBook = async (book: Book) => {
-  try {
-    const availableCopy = await dispatch(getAvailableCopy(book.id)).unwrap();
-    console.log("availableCopy", availableCopy);
+    try {
+      const availableCopy = await dispatch(getAvailableCopy(book.id)).unwrap();
+      console.log("availableCopy", availableCopy);
 
-    await requestLoan(availableCopy.id);
-    setSelectedBook(null);
-    showSuccess("Book borrowed successfully!");
-    await refreshHistory();
-    await refreshBooks();
-  } catch (err) {
-    console.error("Failed to borrow book:", err);
-    showError("Failed to borrow book. Please try again.");
-  }
-};
+      await requestLoan(availableCopy.id);
+      setSelectedBook(null);
+      showSuccess("Book borrowed successfully!");
+      await refreshHistory();
+      await refreshBooks();
+    } catch (err) {
+      console.error("Failed to borrow book:", err);
+      showError("Failed to borrow book. Please try again.");
+    }
+  };
 
-  const booksTableState =
-    isLoadingBooks
-      ? "loading"
-      : booksError
-      ? "error"
-      : booksWithLoanStatus.length === 0
-      ? "empty"
-      : "populated";
+  const booksTableState = resolveCatalogueBooksTableState({
+    isLoadingBooks,
+    booksError,
+    bookCount: booksWithLoanStatus.length,
+    hasActiveSearch: catalogueSearch.hasActiveSearch,
+  });
 
   return (
     <div
@@ -104,6 +110,21 @@ export default function CataloguePage() {
           books={booksWithLoanStatus}
           mode="public"
           state={booksTableState}
+          search={
+            <BookCatalogueSearchPanel
+              idPrefix="catalogue"
+              searchQuery={catalogueSearch.searchQuery}
+              onSearchQueryChange={catalogueSearch.setSearchQuery}
+              filterGenre={catalogueSearch.filterGenre}
+              onFilterGenreChange={catalogueSearch.setFilterGenre}
+              filterYear={catalogueSearch.filterYear}
+              onFilterYearChange={catalogueSearch.setFilterYear}
+              filterLanguage={catalogueSearch.filterLanguage}
+              onFilterLanguageChange={catalogueSearch.setFilterLanguage}
+              onSubmitSearch={catalogueSearch.runCatalogueSearch}
+              isSearching={isSearchingBooks}
+            />
+          }
           onSelectBook={setSelectedBook}
         />
 
