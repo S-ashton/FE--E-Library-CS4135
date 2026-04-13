@@ -10,21 +10,33 @@ export function useBookCopyAvailability(
   const idsKey = [...new Set(titleIds)].sort((a, b) => a - b).join(",");
 
   useEffect(() => {
-    const ids = [...new Set(titleIds)].sort((a, b) => a - b);
+    const ids =
+      idsKey.length === 0
+        ? []
+        : idsKey.split(",").map((s) => Number.parseInt(s, 10)).filter((n) => !Number.isNaN(n));
+    let cancelled = false;
+
     if (ids.length === 0) {
-      setMap({});
-      return;
+      Promise.resolve().then(() => {
+        if (!cancelled) {
+          setMap({});
+        }
+      });
+      return () => {
+        cancelled = true;
+      };
     }
 
-    setMap((prev) => {
-      const next = { ...prev };
-      for (const id of ids) {
-        next[id] = "loading";
-      }
-      return next;
+    Promise.resolve().then(() => {
+      if (cancelled) return;
+      setMap((prev) => {
+        const next = { ...prev };
+        for (const id of ids) {
+          next[id] = "loading";
+        }
+        return next;
+      });
     });
-
-    let cancelled = false;
 
     Promise.all(
       ids.map(async (id) => {

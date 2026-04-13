@@ -6,10 +6,10 @@ export async function checkTitleHasAvailableCopy(
   bookTitleId: number
 ): Promise<CopyAvailabilityResult> {
   try {
-    await apiClient.get("/books/getAvailableCopy", {
-      params: { bookId: bookTitleId },
+    const response = await apiClient.get<number>("/books/countCopies", {
+      params: { bookId: bookTitleId, status: "AVAILABLE" },
     });
-    return "available";
+    return response.data > 0 ? "available" : "all_borrowed";
   } catch (err) {
     if (axios.isAxiosError(err) && err.response?.status === 409) {
       return "all_borrowed";

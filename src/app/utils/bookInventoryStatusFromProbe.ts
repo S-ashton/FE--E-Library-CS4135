@@ -18,14 +18,8 @@ export function bookInventoryStatusFromProbe(
 }
 
 export function catalogueRowInventoryStatus(
-  book: Pick<Book, "copiesAvailable">,
+  _book: Pick<Book, "copiesAvailable">,
   probe: CopyAvailability | undefined
 ): BookInventoryStatus {
-  if (
-    typeof book.copiesAvailable === "number" &&
-    book.copiesAvailable <= 0
-  ) {
-    return "All copies borrowed";
-  }
   return bookInventoryStatusFromProbe(probe);
 }

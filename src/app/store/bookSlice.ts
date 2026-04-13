@@ -8,6 +8,59 @@ import { normalizeBookSearchPayload } from "../utils/normalizeBookSearchPayload"
 import apiClient from "../services/apiClient";
 import axios from "axios";
 
+export type BookCopyStatus = "AVAILABLE" | "ON_LOAN" | "UNAVAILABLE";
+
+async function fetchBookCopyCount(
+  bookId: number,
+  status?: BookCopyStatus
+): Promise<number> {
+  try {
+    const response = await apiClient.get<number>("/books/countCopies", {
+      params: {
+        bookId,
+        ...(status ? { status } : {}),
+      },
+    });
+    return response.data;
+  } catch (err: unknown) {
+    if (axios.isAxiosError(err) && err.response?.status === 409) {
+      return 0;
+    }
+    throw err;
+  }
+}
+
+async function enrichBooksWithCopyCounts(books: BookDTO[]): Promise<BookDTO[]> {
+  return Promise.all(
+    books.map(async (book) => {
+      const needsAvailable =
+        typeof book.copiesAvailable !== "number" || book.copiesAvailable === 0;
+      const needsTotal = typeof book.totalCopies !== "number";
+      if (!needsAvailable && !needsTotal) {
+        return book;
+      }
+      try {
+        const [copiesAvailable, totalCopies] = await Promise.all([
+          needsAvailable
+            ? fetchBookCopyCount(book.id, "AVAILABLE")
+            : Promise.resolve(book.copiesAvailable as number),
+          needsTotal
+            ? fetchBookCopyCount(book.id)
+            : Promise.resolve(book.totalCopies as number),
+        ]);
+
+        return {
+          ...book,
+          copiesAvailable,
+          totalCopies,
+        };
+      } catch {
+        return book;
+      }
+    })
+  );
+}
+
 export const addBookToLibrary = createAsyncThunk(
   "books/addBookToLibrary",
   async (formData: FormData, { rejectWithValue }) => {
@@ -62,7 +115,8 @@ export const fetchBooks = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await apiClient.get("/books/search");
-      return normalizeBookSearchPayload(response.data);
+      const normalizedBooks = normalizeBookSearchPayload(response.data);
+      return enrichBooksWithCopyCounts(normalizedBooks);
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.response?.data?.message) {
         return rejectWithValue(err.response.data.message);
@@ -78,7 +132,8 @@ export const searchBooks = createAsyncThunk(
     try {
       const params = buildBookSearchRequestParams(filters);
       const response = await apiClient.get("/books/search", { params });
-      return normalizeBookSearchPayload(response.data);
+      const normalizedBooks = normalizeBookSearchPayload(response.data);
+      return enrichBooksWithCopyCounts(normalizedBooks);
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.response?.data?.message) {
         return rejectWithValue(err.response.data.message);
@@ -106,8 +161,6 @@ export const getAvailableCopy = createAsyncThunk<
   }
 });
 
-export type BookCopyStatus = "AVAILABLE" | "ON_LOAN" | "UNAVAILABLE";
-
 export const changeBookCopyStatus = createAsyncThunk<
   BookCopyDTO,
   { copyId: number; status: BookCopyStatus },
@@ -120,14 +173,12 @@ export const changeBookCopyStatus = createAsyncThunk<
   try {
     const response = await apiClient.put<BookCopyDTO>(
       "/books/changeStatus",
-      copyId,
+      null,
       {
-        params: { status },
+        params: { copyId, status },
         headers: {
-          "Content-Type": "application/json",
           "X-Authenticated-User-Id": userId,
         },
-        transformRequest: [(data: unknown) => JSON.stringify(data)],
       }
     );
     return response.data;
@@ -151,10 +202,10 @@ export const addBookCopy = createAsyncThunk<
   try {
     const response = await apiClient.post<BookCopyDTO | { status: string; bookId: number }>(
       "/books/addCopy",
-      titleId,
+      null,
       {
+        params: { titleId },
         headers: {
-          "Content-Type": "application/json",
           "X-Authenticated-User-Id": userId,
         },
       }
@@ -238,8 +289,14 @@ const booksSlice = createSlice({
         state.isAddingCopy = true;
         state.booksError = null;
       })
-      .addCase(addBookCopy.fulfilled, (state) => {
+      .addCase(addBookCopy.fulfilled, (state, action) => {
         state.isAddingCopy = false;
+        const titleId = action.meta.arg;
+        const book = state.books.find((item) => item.id === titleId);
+        if (book) {
+          book.copiesAvailable = (book.copiesAvailable ?? 0) + 1;
+          book.totalCopies = (book.totalCopies ?? 0) + 1;
+        }
       })
       .addCase(addBookCopy.rejected, (state, action) => {
         state.isAddingCopy = false;

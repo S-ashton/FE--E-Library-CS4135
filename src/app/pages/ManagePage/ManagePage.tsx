@@ -47,11 +47,7 @@ export default function ManagePage() {
     return books.map((book) => {
       const probe = availabilityMap[book.id] ?? "loading";
       const status = bookInventoryStatusFromProbe(probe);
-      const statusLabel =
-        probe === "available" && book.copiesAvailable != null
-          ? `Available copies: ${book.copiesAvailable}`
-          : undefined;
-      return { ...book, status, statusLabel };
+      return { ...book, status };
     });
   }, [books, availabilityMap]);
 

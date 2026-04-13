@@ -108,7 +108,7 @@ function BookTable({
                 <th className={styles.headCell}>Year</th>
                 {showCopyCounts ? (
                   <th className={`${styles.headCell} ${styles.copiesHeadCell}`}>
-                    Copies
+                    Available copies
                   </th>
                 ) : null}
                 <th className={styles.headCell}>Status</th>
@@ -154,7 +154,7 @@ function BookTable({
                   <td className={`${styles.cell} ${styles.yearCell}`}>{book.yearPublished}</td>
                   {showCopyCounts ? (
                     <td className={`${styles.cell} ${styles.copiesCell}`}>
-                      {book.totalCopies != null ? book.totalCopies : '—'}
+                      {book.copiesAvailable != null ? book.copiesAvailable : '—'}
                     </td>
                   ) : null}
                   <td className={styles.cell}>
