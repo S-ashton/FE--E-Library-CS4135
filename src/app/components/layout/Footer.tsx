@@ -22,7 +22,6 @@ export default function Footer() {
         }}
       >
         <span>© 2026 E-Library</span>
-        <span>THIS IS A FOOTER</span>
         <span>Discover your next read</span>
       </div>
     </footer>

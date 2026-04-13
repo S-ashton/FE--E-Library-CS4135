@@ -1,16 +1,30 @@
-# React + Vite
+# E-Library (frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Course project frontend for an **e-library**: browse books, borrow and return copies, see active and overdue loans, and view personalised recommendations. Staff can manage catalogue entries from a dedicated area.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React** (Vite) with **TypeScript**
+- **Redux Toolkit** for app state and API-driven slices
+- **React Router** for protected routes and role-based areas
+- **Axios** for HTTP, **Vitest** + Testing Library for tests
 
-## React Compiler
+## Run locally
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Create `.env.development` in the repo root and set:
 
-## Expanding the ESLint configuration
+   `VITE_API_BASE_URL=<your backend base URL>`  
+   (The app throws at startup if this is missing.)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+2. Install and start:
+
+   ```bash
+   npm install
+   npm run dev
+   ```
+
+Other useful commands: `npm run build`, `npm run lint`, `npm run test:run`.
+
+## Layout
+
+Application code lives under `src/app/` (pages, components, store, hooks, services, types). The UI talks to a **separate backend**; this repository is the browser client only.
