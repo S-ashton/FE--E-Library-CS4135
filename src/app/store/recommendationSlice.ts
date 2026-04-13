@@ -27,9 +27,6 @@ export const fetchRecommendations = createAsyncThunk<
         '/recommendations',
         {
           params: limit != null ? { limit } : undefined,
-          headers: {
-            'X-Authenticated-User-Id': userId,
-          },
         }
       )
       return response.data

@@ -5,16 +5,18 @@ import {
 } from '../store/recommendationSlice'
 import { useAppDispatch, useAppSelector } from './reduxHooks'
 
-/**
- * @param enabled When false (e.g. user has no loan history), the API is not called
- *                and recommendation state is cleared.
- */
 export function useRecommendations(limit = 5, enabled = true) {
   const dispatch = useAppDispatch()
   const { items, status, error, lastFetchedAt } = useAppSelector(
     (state) => state.recommendations
   )
   const userId = useAppSelector((state) => state.auth.user?.id)
+  const loanHistoryRevision = useAppSelector((state) =>
+    [...state.loans.history]
+      .sort((a, b) => a.id.localeCompare(b.id))
+      .map((l) => `${l.id}:${l.status}`)
+      .join('|')
+  )
 
   const refresh = useCallback(() => {
     if (!enabled) return
@@ -31,7 +33,7 @@ export function useRecommendations(limit = 5, enabled = true) {
       return
     }
     refresh()
-  }, [userId, enabled, refresh, dispatch])
+  }, [userId, enabled, loanHistoryRevision, refresh, dispatch])
 
   return {
     items,

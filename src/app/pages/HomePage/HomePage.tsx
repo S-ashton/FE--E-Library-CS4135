@@ -1,5 +1,5 @@
 import { startTransition, useEffect, useMemo, useRef, useState } from "react";
-import RecDashboard from "../../components/ui/recDashboard";
+import RecDashboard from "../../components/ui/RecDashboard/RecDashboard";
 import { useManageBooks } from "../../hooks/useManageBooks";
 import { Book, type BookDTO, toBook } from "../../types/book";
 import BookDetailsCard from "../../components/ui/BookDetailsCard/BookDetailsCard";
@@ -27,9 +27,7 @@ export default function HomePage() {
     probeRefresh
   );
   const user = useAppSelector((state) => state.auth.user);
-  const hasBorrowingHistory = history.length > 0;
-  const recommendationsEnabled =
-    Boolean(user) && !isLoadingHistory && hasBorrowingHistory;
+  const recommendationsEnabled = Boolean(user);
 
   const {
     items: recommendationItems,
@@ -151,7 +149,9 @@ export default function HomePage() {
 
   const borrowedBooks = useMemo(() => {
     return history
-      .filter((loan) => loan.status === "ACTIVE")
+      .filter(
+        (loan) => loan.status === "ACTIVE" || loan.status === "OVERDUE"
+      )
       .map((loan) => {
         const titleId = resolveCatalogueTitleId(loan.bookId);
         const book = books.find(
@@ -196,6 +196,21 @@ export default function HomePage() {
     }
   };
 
+  const handleSelectRecommendation = async (bookId: number) => {
+    const fromCatalogue = books.find((b) => b.id === bookId);
+    if (fromCatalogue) {
+      setSelectedBook(fromCatalogue);
+      return;
+    }
+
+    try {
+      const dto = await dispatch(getBookDetails(String(bookId))).unwrap();
+      setSelectedBook(toBook(dto as BookDTO));
+    } catch {
+      showError("Could not load book details. Please try again.");
+    }
+  };
+
   const activeLoansState =
     isLoadingHistory
       ? "loading"
@@ -204,6 +219,13 @@ export default function HomePage() {
         : borrowedBooks.length === 0
           ? "empty"
           : "populated";
+  const selectedBookAlreadyBorrowed =
+    selectedBook != null &&
+    history.some((loan) => {
+      if (loan.status !== "ACTIVE" && loan.status !== "OVERDUE") return false;
+      const titleId = resolveCatalogueTitleId(loan.bookId);
+      return titleId === selectedBook.id;
+    });
 
   return (
       <div
@@ -245,12 +267,9 @@ export default function HomePage() {
 
         <RecDashboard
           onRefresh={refreshRecommendations}
+          onSelectRecommendation={handleSelectRecommendation}
           isLoading={Boolean(user) && recommendationsLoading}
           isAuthenticated={Boolean(user)}
-          isHistoryLoading={Boolean(user) && isLoadingHistory}
-          showBorrowFirstEmpty={
-            Boolean(user) && !isLoadingHistory && !hasBorrowingHistory
-          }
           error={recommendationsError}
           recommendations={
             user && recommendationsEnabled ? resolvedRecommendations : []
@@ -274,6 +293,7 @@ export default function HomePage() {
             copyAvailability={
               selectedBook ? availabilityMap[selectedBook.id] : undefined
             }
+            isAlreadyBorrowed={selectedBookAlreadyBorrowed}
           />
         )}
       </div>
