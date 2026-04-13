@@ -6,6 +6,6 @@ describe('Footer', () => {
   it('renders footer branding', () => {
     render(<Footer />)
     expect(screen.getByText(/© 2026 E-Library/i)).toBeInTheDocument()
-    expect(screen.getByText(/THIS IS A FOOTER/i)).toBeInTheDocument()
+    expect(screen.getByText(/Discover your next read/i)).toBeInTheDocument()
   })
 })

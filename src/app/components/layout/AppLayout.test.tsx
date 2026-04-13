@@ -27,6 +27,6 @@ describe('AppLayout', () => {
 
     expect(screen.getByText('Main area')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /e-library/i })).toBeInTheDocument()
-    expect(screen.getByText(/THIS IS A FOOTER/i)).toBeInTheDocument()
+    expect(screen.getByText(/Discover your next read/i)).toBeInTheDocument()
   })
 })
