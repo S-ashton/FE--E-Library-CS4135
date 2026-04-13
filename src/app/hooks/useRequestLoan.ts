@@ -1,9 +1,5 @@
 import { borrowBook } from "../store/loanSlice";
 import {
-  changeBookCopyStatus,
-  getAvailableCopy,
-} from "../store/bookSlice";
-import {
   registerCopyTitleId,
   setLoanCopyId,
 } from "../utils/loanCopyIdStorage";
@@ -15,16 +11,12 @@ export function useRequestLoan() {
 
   const requestLoan = async (bookTitleId: string) => {
     const titleId = Number(bookTitleId);
-    const availableCopy = await dispatch(getAvailableCopy(titleId)).unwrap();
-    await dispatch(
-      changeBookCopyStatus({
-        copyId: availableCopy.id,
-        status: "ON_LOAN",
-      })
-    ).unwrap();
-    const loan = await dispatch(borrowBook(String(availableCopy.id))).unwrap();
-    setLoanCopyId(loan.id, availableCopy.id);
-    registerCopyTitleId(availableCopy.id, availableCopy.bookId);
+    const loan = await dispatch(borrowBook(String(titleId))).unwrap();
+    const copyId = Number(loan.bookId);
+    if (!Number.isNaN(copyId)) {
+      setLoanCopyId(loan.id, copyId);
+      registerCopyTitleId(copyId, titleId);
+    }
     return loan;
   };
 

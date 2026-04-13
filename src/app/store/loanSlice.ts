@@ -3,11 +3,20 @@ import axios from 'axios'
 import apiClient from '../services/apiClient'
 import type { LoanDTO } from '../types/loan'
 
+type BorrowBookRootState = {
+  auth: {
+    user: { email: string } | null
+  }
+}
+
 export const borrowBook = createAsyncThunk(
     'loans/borrowBook',
-    async (bookId: string, { rejectWithValue }) => {
+    async (bookId: string, { getState, rejectWithValue }) => {
         try {
-            const response = await apiClient.post<LoanDTO>('/loans', { bookId })
+            const state = getState() as BorrowBookRootState
+            const email = state.auth.user?.email
+            const payload = email ? { bookId, email } : { bookId }
+            const response = await apiClient.post<LoanDTO>('/loans', payload)
             return response.data
         } catch (err: unknown) {
             if (axios.isAxiosError(err) && err.response?.data?.message) {
