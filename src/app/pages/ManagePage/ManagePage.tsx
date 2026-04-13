@@ -58,6 +58,14 @@ export default function ManagePage() {
     hasActiveSearch: catalogueSearch.hasActiveSearch,
   });
 
+  const refreshCatalogueAfterError = useCallback(async () => {
+    try {
+      await refreshBooks();
+      setCopyAvailBump((k) => k + 1);
+    } catch {
+    }
+  }, [refreshBooks]);
+
   const handleAddCopy = useCallback(
     async (book: Book) => {
       setAddingCopyBookId(book.id);
@@ -69,11 +77,12 @@ export default function ManagePage() {
       } catch (err) {
         console.error("Failed to add copy:", err);
         showError("Could not add a copy. Please try again.");
+        await refreshCatalogueAfterError();
       } finally {
         setAddingCopyBookId(null);
       }
     },
-    [dispatch, refreshBooks, showError, showSuccess]
+    [dispatch, refreshBooks, refreshCatalogueAfterError, showError, showSuccess]
   );
 
   const {
@@ -104,6 +113,7 @@ export default function ManagePage() {
       } catch (err) {
         console.error("Failed to add book:", err);
         showError("Failed to add book. Please try again.");
+        await refreshCatalogueAfterError();
         throw err;
       }
     },
