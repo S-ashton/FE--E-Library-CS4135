@@ -12,9 +12,10 @@ import { useToast } from "../../hooks/useToast";
 import { resolveCatalogueBooksTableState } from "../../utils/bookSearchFilterHelpers";
 import { catalogueRowInventoryStatus } from "../../utils/bookInventoryStatusFromProbe";
 import { useBookCopyAvailability } from "../../hooks/useBookCopyAvailability";
+import { resolveCatalogueTitleId } from "../../utils/loanCopyIdStorage";
 
 export default function CataloguePage() {
-  const { error, refreshHistory } = useLoanHistory();
+  const { history, error, refreshHistory } = useLoanHistory();
   const { requestLoan, isBorrowing } = useRequestLoan();
   const { books, refreshBooks, isLoadingBooks, booksError } = useManageBooks();
   const { isSearchingBooks, searchForBooks } = useSearchBooks();
@@ -62,6 +63,13 @@ export default function CataloguePage() {
     bookCount: booksWithInventory.length,
     hasActiveSearch: catalogueSearch.hasActiveSearch,
   });
+  const selectedBookAlreadyBorrowed =
+    selectedBook != null &&
+    history.some((loan) => {
+      if (loan.status !== "ACTIVE" && loan.status !== "OVERDUE") return false;
+      const titleId = resolveCatalogueTitleId(loan.bookId);
+      return titleId === selectedBook.id;
+    });
 
   return (
     <div
@@ -132,6 +140,7 @@ export default function CataloguePage() {
             isSubmitting={isBorrowing}
             error={error}
             copyAvailability={availabilityMap[selectedBook.id]}
+            isAlreadyBorrowed={selectedBookAlreadyBorrowed}
           />
         )}
       </section>

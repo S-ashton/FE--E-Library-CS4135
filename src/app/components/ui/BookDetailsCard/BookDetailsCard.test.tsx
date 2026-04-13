@@ -53,7 +53,7 @@ describe('BookDetailsCard', () => {
     expect(screen.getByText('Borrow failed')).toBeInTheDocument()
   })
 
-  it('disables borrow when search reports zero available copies', () => {
+  it('enables borrow when probe says available even if search payload has copiesAvailable 0', () => {
     render(
       <BookDetailsCard
         book={{ ...sampleBook, copiesAvailable: 0 }}
@@ -63,7 +63,36 @@ describe('BookDetailsCard', () => {
       />
     )
     expect(
+      screen.getByRole('button', { name: /borrow book/i })
+    ).toBeEnabled()
+  })
+
+  it('disables borrow when probe reports no available copy', () => {
+    render(
+      <BookDetailsCard
+        book={{ ...sampleBook, copiesAvailable: 10 }}
+        onClose={() => {}}
+        onBorrow={() => {}}
+        copyAvailability="all_borrowed"
+      />
+    )
+    expect(
       screen.getByRole('button', { name: /no copy available/i })
+    ).toBeDisabled()
+  })
+
+  it('disables borrow when user already has this title on loan', () => {
+    render(
+      <BookDetailsCard
+        book={sampleBook}
+        onClose={() => {}}
+        onBorrow={() => {}}
+        copyAvailability="available"
+        isAlreadyBorrowed
+      />
+    )
+    expect(
+      screen.getByRole('button', { name: /already borrowed/i })
     ).toBeDisabled()
   })
 })

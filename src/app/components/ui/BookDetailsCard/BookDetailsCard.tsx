@@ -9,6 +9,7 @@ type BookDetailsCardProps = {
   error?: string | null;
   isSubmitting?: boolean;
   copyAvailability?: CopyAvailability;
+  isAlreadyBorrowed?: boolean;
 };
 
 export default function BookDetailsCard({
@@ -18,18 +19,19 @@ export default function BookDetailsCard({
   error,
   isSubmitting = false,
   copyAvailability,
+  isAlreadyBorrowed = false,
 }: BookDetailsCardProps) {
-  const apiSaysNoCopies =
-    typeof book.copiesAvailable === "number" && book.copiesAvailable <= 0;
   const checking =
     copyAvailability === undefined || copyAvailability === "loading";
-  const probeSaysAvailable = copyAvailability === "available";
-  const canBorrow = !apiSaysNoCopies && probeSaysAvailable;
+  const canBorrow =
+    !isAlreadyBorrowed &&
+    !checking &&
+    copyAvailability === "available";
   const borrowDisabled = isSubmitting || checking || !canBorrow;
   const borrowLabel = isSubmitting
     ? "Borrowing..."
-    : apiSaysNoCopies
-      ? "No copy available"
+    : isAlreadyBorrowed
+      ? "Already borrowed"
       : checking
         ? "Checking…"
         : canBorrow
