@@ -11,6 +11,7 @@ import HomePage from '../pages/HomePage/HomePage.tsx';
 import ManagePage from '../pages/ManagePage/ManagePage.tsx';
 import CataloguePage from '../pages/CataloguePage.tsx/CataloguePage.tsx';
 import AdminPage from '../pages/AdminPage/AdminPage.tsx';
+import LoansPage from '../pages/LoansPage/LoansPage.tsx';
 
 function AppRouter() {
   return (
@@ -46,6 +47,7 @@ function AppRouter() {
         <Route element={<RoleRoute allowedRoles={['STAFF', 'ADMIN']} />}>
           <Route element={<AppLayout />}>
             <Route path="/manage" element={<ManagePage />} />
+            <Route path="/loans" element={<LoansPage />} />
           </Route>
         </Route>
 

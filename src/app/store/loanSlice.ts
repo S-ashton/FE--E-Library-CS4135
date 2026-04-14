@@ -58,19 +58,38 @@ export const returnBook = createAsyncThunk(
 
 )
 
+export const fetchAllLoans = createAsyncThunk(
+    'loans/fetchAllLoans',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await apiClient.get<LoanDTO[]>('/loans/active')
+            return response.data
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err) && err.response?.data?.message) {
+                return rejectWithValue(err.response.data.message)
+            }
+            return rejectWithValue('An error occurred while fetching loans. Please try again.')
+        }
+    }
+)
+
 type LoanState = {
     history: LoanDTO[]
+    allLoans: LoanDTO[]
     isBorrowing: boolean
     isLoadingHistory: boolean
+    isLoadingAllLoans: boolean
     isReturning: boolean
     error: string | null
 }
 
 const initialState: LoanState = {
     history: [],
+    allLoans: [],
     isBorrowing: false,
     error: null,
     isLoadingHistory: false,
+    isLoadingAllLoans: false,
     isReturning: false
 }
 
@@ -126,7 +145,19 @@ const loanSlice = createSlice({
             .addCase(returnBook.rejected, (state, action) => {
                 state.isReturning = false
                 state.error = (action.payload as string) ?? 'Failed to return the loan.'
-            })  
+            })
+            .addCase(fetchAllLoans.pending, (state) => {
+                state.isLoadingAllLoans = true
+                state.error = null
+            })
+            .addCase(fetchAllLoans.fulfilled, (state, action) => {
+                state.isLoadingAllLoans = false
+                state.allLoans = action.payload
+            })
+            .addCase(fetchAllLoans.rejected, (state, action) => {
+                state.isLoadingAllLoans = false
+                state.error = (action.payload as string) ?? 'Failed to fetch loans.'
+            })
     }
 })
 

@@ -1,0 +1,89 @@
+.tableWrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.table thead {
+  background: #f8fafc;
+}
+
+.table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #475569;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 12px 16px;
+  color: #0f172a;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.statusActive {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.statusOverdue {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.fineAmount {
+  font-weight: 600;
+  color: #dc2626;
+}
+
+.fineNone {
+  color: #94a3b8;
+}
+
+.emptyMsg {
+  text-align: center;
+  padding: 48px 0;
+  color: #94a3b8;
+  font-size: 1rem;
+}
+
+.errorMsg {
+  color: #dc2626;
+  padding: 16px;
+  text-align: center;
+}
+
+.loadingMsg {
+  color: #94a3b8;
+  padding: 16px;
+  text-align: center;
+}
