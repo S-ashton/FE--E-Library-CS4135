@@ -48,6 +48,11 @@ export default function EditBookForm({
       return;
     }
 
+    if (Number(year) < 1000 || Number(year) > 2026) {
+      setValidationError("Year must be between 1000 and 2026.");
+      return;
+    }
+
     onSubmit({ title, author, description, category, year, language, coverImage });
   };
 
@@ -169,6 +174,8 @@ export default function EditBookForm({
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
                 disabled={isSubmitting}
+                min={1000}
+                max={2026}
                 className={styles.input}
               />
             </div>

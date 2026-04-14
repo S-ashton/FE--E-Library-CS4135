@@ -1,8 +1,10 @@
+import { useState } from "react";
 import SearchBar from "../SearchBar/SearchBar";
 import {
   BOOK_SEARCH_GENRES,
   BOOK_SEARCH_LANGUAGES,
 } from "../../../constants/bookSearchOptions";
+import { genreLabel, languageLabel } from "../../../utils/bookEnumLabels";
 import styles from "./BookCatalogueSearchPanel.module.css";
 
 type BookCatalogueSearchPanelProps = {
@@ -36,6 +38,21 @@ export default function BookCatalogueSearchPanel({
   const genreId = `${idPrefix}-filter-genre`;
   const yearId = `${idPrefix}-filter-year`;
   const languageId = `${idPrefix}-filter-language`;
+  const [yearError, setYearError] = useState<string | null>(null);
+
+  const handleYearChange = (value: string) => {
+    onFilterYearChange(value);
+    if (value === "") {
+      setYearError(null);
+      return;
+    }
+    const n = Number(value);
+    if (Number.isNaN(n) || n < 1000 || n > 2026) {
+      setYearError("Year must be between 1000 and 2026.");
+    } else {
+      setYearError(null);
+    }
+  };
 
   return (
     <div className={styles.root}>
@@ -60,24 +77,26 @@ export default function BookCatalogueSearchPanel({
             <option value="">All</option>
             {BOOK_SEARCH_GENRES.map((g) => (
               <option key={g} value={g}>
-                {g}
+                {genreLabel(g)}
               </option>
             ))}
           </select>
         </div>
-        <div className={styles.field}>
+        <div className={`${styles.field} ${styles.yearField}`}>
           <label className={styles.filterLabel} htmlFor={yearId}>
             Year
           </label>
           <input
             id={yearId}
-            className={`${styles.control} ${styles.yearInput}`}
+            className={`${styles.control} ${styles.yearInput} ${yearError ? styles.inputError : ""}`}
             type="number"
             value={filterYear}
-            onChange={(e) => onFilterYearChange(e.target.value)}
+            onChange={(e) => handleYearChange(e.target.value)}
             placeholder="Any"
-            min={0}
+            min={1000}
+            max={2026}
           />
+          {yearError && <p className={styles.yearErrorMsg}>{yearError}</p>}
         </div>
         <div className={styles.field}>
           <label className={styles.filterLabel} htmlFor={languageId}>
@@ -92,7 +111,7 @@ export default function BookCatalogueSearchPanel({
             <option value="">All</option>
             {BOOK_SEARCH_LANGUAGES.map((lang) => (
               <option key={lang} value={lang}>
-                {lang}
+                {languageLabel(lang)}
               </option>
             ))}
           </select>

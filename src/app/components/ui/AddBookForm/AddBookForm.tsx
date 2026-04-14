@@ -149,6 +149,8 @@ export default function AddBookForm({
               value={bookYear}
               onChange={(e) => onYearChange(e.target.value)}
               disabled={isSubmitting}
+              min={1000}
+              max={2026}
               className={styles.input}
             />
           </div>

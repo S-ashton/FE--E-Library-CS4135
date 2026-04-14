@@ -10,12 +10,34 @@
   flex-wrap: wrap;
   gap: 12px;
   align-items: flex-end;
+  padding-bottom: 1.4rem;
 }
 
 .field {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.inputError {
+  border-color: #dc2626 !important;
+  outline-color: #dc2626;
+}
+
+.yearField {
+  position: relative;
+}
+
+.yearErrorMsg {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin: 0;
+  padding-top: 2px;
+  font-size: 0.8rem;
+  color: #dc2626;
+  white-space: nowrap;
+  z-index: 10;
 }
 
 .filterLabel {

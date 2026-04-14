@@ -19,7 +19,9 @@ export function buildBookSearchRequestParams(
     filters.year !== undefined &&
     filters.year !== null &&
     !Number.isNaN(filters.year) &&
-    filters.year !== 0
+    filters.year !== 0 &&
+    filters.year >= 1000 &&
+    filters.year <= 2026
   ) {
     params.year = filters.year;
   }

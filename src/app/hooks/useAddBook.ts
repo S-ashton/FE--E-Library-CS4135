@@ -38,6 +38,11 @@ export function useAddBook({ onAddBook }: UseAddBookParams) {
       return;
     }
 
+    if (parsedYear < 1000 || parsedYear > 2026) {
+      setError("Year must be between 1000 and 2026.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
