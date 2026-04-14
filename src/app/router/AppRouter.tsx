@@ -12,6 +12,7 @@ import ManagePage from '../pages/ManagePage/ManagePage.tsx';
 import CataloguePage from '../pages/CataloguePage.tsx/CataloguePage.tsx';
 import AdminPage from '../pages/AdminPage/AdminPage.tsx';
 import LoansPage from '../pages/LoansPage/LoansPage.tsx';
+import SettingsPage from '../pages/SettingsPage/SettingsPage.tsx';
 
 function AppRouter() {
   return (
@@ -33,6 +34,7 @@ function AppRouter() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/catalogue" element={<CataloguePage />} />
+            <Route path="/settings" element={<SettingsPage />} />
           </Route>
         </Route>
 

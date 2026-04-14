@@ -26,6 +26,7 @@ function Navbar() {
             <Link to="/dashboard" className="nav-link">Home</Link>
           )}
           <Link to="/catalogue" className="nav-link">Catalogue</Link>
+          <Link to="/settings" className="nav-link">Account</Link>
 
           {(user?.role === 'STAFF' || user?.role === 'ADMIN') && (
             <Link to="/manage" className="nav-link">Manage</Link>
