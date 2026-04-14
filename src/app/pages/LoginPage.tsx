@@ -46,7 +46,7 @@ function LoginPage() {
 
     try {
       await dispatch(login({ email, password })).unwrap();
-      navigate("/dashboard", { replace: true });
+      navigate("/", { replace: true });
     } catch (err: unknown) {
       if (typeof err === "string") {
         setError(err);
@@ -94,7 +94,7 @@ function LoginPage() {
         })
       ).unwrap();
       await dispatch(login({ email: email.trim(), password })).unwrap();
-      navigate("/dashboard", { replace: true });
+      navigate("/", { replace: true });
     } catch (err: unknown) {
       if (typeof err === "string") {
         setError(err);

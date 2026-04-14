@@ -36,11 +36,9 @@ export default function RecDashboard({
   isAuthenticated = true,
   error = null,
   recommendations = [],
-  lastUpdatedLabel = "Not yet loaded",
 }: RecDashboardProps) {
   const showRecList = isAuthenticated;
   const refreshDisabled = isLoading || !showRecList || !onRefresh;
-  const recommendationCount = showRecList ? recommendations.length : 0;
 
   return (
     <section className={styles.card}>
@@ -60,17 +58,6 @@ export default function RecDashboard({
         >
           Refresh
         </button>
-      </div>
-
-      <div className={styles.summaryGrid}>
-        <div className={styles.summaryBox}>
-          <p className={styles.summaryLabel}>Recommendation Count</p>
-          <p className={styles.summaryValue}>{recommendationCount}</p>
-        </div>
-        <div className={styles.summaryBox}>
-          <p className={styles.summaryLabel}>Last Updated</p>
-          <p className={styles.summaryValue}>{lastUpdatedLabel}</p>
-        </div>
       </div>
 
       <div className={styles.placeholderPanel}>

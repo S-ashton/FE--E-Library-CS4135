@@ -1,11 +1,11 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import RoleRoute from './RoleRoute';
+import RootRedirect from './RootRedirect';
 import AppLayout from '../components/layout/AppLayout';
 import PublicLayout from '../components/layout/PublicLayout';
 import NotFound from '../pages/NotFound';
 import Unauthorized from '../pages/Unauthorised.tsx';
-// import LoginPage from '../features/auth/LoginPage';
 import LoginPage from "../pages/LoginPage";
 import HomePage from '../pages/HomePage/HomePage.tsx';
 import ManagePage from '../pages/ManagePage/ManagePage.tsx';
@@ -23,12 +23,22 @@ function AppRouter() {
           <Route path="/unauthorised" element={<Unauthorized />} />
         </Route>
 
+        {/* Root redirect - sends each role to their landing page */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<RootRedirect />} />
+        </Route>
+
         {/* Protected routes - authenticated users only */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<HomePage />} />
             <Route path="/catalogue" element={<CataloguePage />} />
+          </Route>
+        </Route>
+
+        {/* Dashboard - USER only */}
+        <Route element={<RoleRoute allowedRoles={['USER']} />}>
+          <Route element={<AppLayout />}>
+            <Route path="/dashboard" element={<HomePage />} />
           </Route>
         </Route>
 

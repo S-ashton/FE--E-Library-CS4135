@@ -17,12 +17,14 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <Link to="/dashboard" className="nav-link nav-brand">
+        <Link to="/" className="nav-link nav-brand">
           E-Library
         </Link>
 
         <div className="nav-links-group">
-          <Link to="/dashboard" className="nav-link">Home</Link>
+          {user?.role === 'USER' && (
+            <Link to="/dashboard" className="nav-link">Home</Link>
+          )}
           <Link to="/catalogue" className="nav-link">Catalogue</Link>
 
           {(user?.role === 'STAFF' || user?.role === 'ADMIN') && (
