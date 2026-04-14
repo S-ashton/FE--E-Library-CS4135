@@ -28,7 +28,7 @@ export default function SearchBar({
   inputProps,
 }: SearchBarProps) {
   const busy = isLoading;
-  const effectiveDisabled = disabled || busy;
+  const effectiveDisabled = disabled;
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
