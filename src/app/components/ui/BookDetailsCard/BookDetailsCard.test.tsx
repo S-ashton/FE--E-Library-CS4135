@@ -95,4 +95,19 @@ describe('BookDetailsCard', () => {
       screen.getByRole('button', { name: /already borrowed/i })
     ).toBeDisabled()
   })
+
+  it('disables borrow and shows staff label when isStaff is true (staff or admin)', () => {
+    render(
+      <BookDetailsCard
+        book={sampleBook}
+        onClose={() => {}}
+        onBorrow={() => {}}
+        copyAvailability="available"
+        isStaff
+      />
+    )
+    expect(
+      screen.getByRole('button', { name: /staff cannot borrow/i })
+    ).toBeDisabled()
+  })
 })

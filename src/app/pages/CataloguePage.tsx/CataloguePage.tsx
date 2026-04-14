@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import BookCatalogueSearchPanel from "../../components/ui/BookCatalogueSearchPanel/BookCatalogueSearchPanel";
 import BookDetailsCard from "../../components/ui/BookDetailsCard/BookDetailsCard";
 import BookTable from "../../components/ui/BookTable/BookTable";
@@ -13,8 +14,11 @@ import { resolveCatalogueBooksTableState } from "../../utils/bookSearchFilterHel
 import { catalogueRowInventoryStatus } from "../../utils/bookInventoryStatusFromProbe";
 import { useBookCopyAvailability } from "../../hooks/useBookCopyAvailability";
 import { resolveCatalogueTitleId } from "../../utils/loanCopyIdStorage";
+import type { RootState } from "../../store/store";
 
 export default function CataloguePage() {
+  const userRole = useSelector((state: RootState) => state.auth.user?.role);
+  const isStaff = userRole === "STAFF" || userRole === "ADMIN";
   const { history, error, refreshHistory } = useLoanHistory();
   const { requestLoan, isBorrowing } = useRequestLoan();
   const { books, refreshBooks, isLoadingBooks, booksError } = useManageBooks();
@@ -141,6 +145,7 @@ export default function CataloguePage() {
             error={error}
             copyAvailability={availabilityMap[selectedBook.id]}
             isAlreadyBorrowed={selectedBookAlreadyBorrowed}
+            isStaff={isStaff}
           />
         )}
       </section>

@@ -10,6 +10,7 @@ type BookDetailsCardProps = {
   isSubmitting?: boolean;
   copyAvailability?: CopyAvailability;
   isAlreadyBorrowed?: boolean;
+  isStaff?: boolean;
 };
 
 export default function BookDetailsCard({
@@ -20,23 +21,27 @@ export default function BookDetailsCard({
   isSubmitting = false,
   copyAvailability,
   isAlreadyBorrowed = false,
+  isStaff = false,
 }: BookDetailsCardProps) {
   const checking =
     copyAvailability === undefined || copyAvailability === "loading";
   const canBorrow =
+    !isStaff &&
     !isAlreadyBorrowed &&
     !checking &&
     copyAvailability === "available";
-  const borrowDisabled = isSubmitting || checking || !canBorrow;
-  const borrowLabel = isSubmitting
-    ? "Borrowing..."
-    : isAlreadyBorrowed
-      ? "Already borrowed"
-      : checking
-        ? "Checking…"
-        : canBorrow
-          ? "Borrow Book"
-          : "No copy available";
+  const borrowDisabled = isStaff || isSubmitting || checking || !canBorrow;
+  const borrowLabel = isStaff
+    ? "Borrow Disabled"
+    : isSubmitting
+      ? "Borrowing..."
+      : isAlreadyBorrowed
+        ? "Already borrowed"
+        : checking
+          ? "Checking…"
+          : canBorrow
+            ? "Borrow Book"
+            : "No copy available";
 
   return (
     <div className={styles.overlay} onClick={onClose}>
