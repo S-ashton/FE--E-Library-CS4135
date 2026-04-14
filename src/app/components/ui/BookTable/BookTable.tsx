@@ -1,5 +1,6 @@
 import type { Book } from '../../../types/book'
 import type { CatalogueBooksTableViewState } from '../../../utils/bookSearchFilterHelpers'
+import { genreLabel } from '../../../utils/bookEnumLabels'
 import styles from './BookTable.module.css'
 import type React from 'react'
 
@@ -157,7 +158,7 @@ function BookTable({
                   <td className={styles.titleCell}>{book.title}</td>
                   <td className={`${styles.cell} ${styles.authorCell}`}>{book.author}</td>
                   <td className={styles.cell}>
-                    <span className={styles.categoryBadge}>{book.category}</span>
+                    <span className={styles.categoryBadge}>{genreLabel(book.category)}</span>
                   </td>
                   <td className={`${styles.cell} ${styles.yearCell}`}>{book.yearPublished}</td>
                   {showCopyCounts ? (

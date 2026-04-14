@@ -1,5 +1,6 @@
 import type { Book } from "../../../types/book";
 import type { CopyAvailability } from "../../../types/copyAvailability";
+import { genreLabel } from "../../../utils/bookEnumLabels";
 import styles from "./BookDetailsCard.module.css";
 
 type BookDetailsCardProps = {
@@ -81,7 +82,7 @@ export default function BookDetailsCard({
             </p>
 
             <p className={styles.metaText}>
-              <strong>Genre:</strong> {book.category}
+              <strong>Genre:</strong> {genreLabel(book.category)}
             </p>
 
             <p className={styles.metaText}>
