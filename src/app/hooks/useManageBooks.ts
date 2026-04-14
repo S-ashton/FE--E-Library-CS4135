@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "./reduxHooks";
-import { fetchBooks, addBookToLibrary } from "../store/bookSlice";
+import { fetchBooks, addBookToLibrary, updateBook, deleteBook } from "../store/bookSlice";
 import type { BookInventoryStatus } from "../types/book";
 export type AddBookInput = {
   title: string;
@@ -36,6 +36,28 @@ export function useManageBooks() {
     },
     [dispatch]
   );
+  const editBook = useCallback(
+    async (bookId: number, book: AddBookInput) => {
+      const formData = new FormData();
+      formData.append("title", book.title);
+      formData.append("author", book.author);
+      formData.append("description", book.description);
+      formData.append("yearPublished", String(book.yearPublished));
+      formData.append("genre", book.category);
+      formData.append("language", book.language ?? "ENGLISH");
+      if (book.coverImage) {
+        formData.append("coverImage", book.coverImage);
+      }
+      return await dispatch(updateBook({ bookId, formData })).unwrap();
+    },
+    [dispatch]
+  );
+  const removeBook = useCallback(
+    async (bookId: number) => {
+      return await dispatch(deleteBook(bookId)).unwrap();
+    },
+    [dispatch]
+  );
   return {
     books,
     isLoadingBooks,
@@ -43,5 +65,7 @@ export function useManageBooks() {
     booksError,
     refreshBooks,
     addBook,
+    editBook,
+    removeBook,
   };
 }

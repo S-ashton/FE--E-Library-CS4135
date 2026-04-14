@@ -190,6 +190,40 @@ export const changeBookCopyStatus = createAsyncThunk<
   }
 });
 
+export const updateBook = createAsyncThunk(
+  "books/updateBook",
+  async ({ bookId, formData }: { bookId: number; formData: FormData }, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.put(`/books/${bookId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
+        return rejectWithValue(err.response.data.message);
+      }
+      return rejectWithValue("An error occurred while updating the book.");
+    }
+  }
+);
+
+export const deleteBook = createAsyncThunk(
+  "books/deleteBook",
+  async (bookId: number, { rejectWithValue }) => {
+    try {
+      await apiClient.delete(`/books/${bookId}`);
+      return bookId;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
+        return rejectWithValue(err.response.data.message);
+      }
+      return rejectWithValue("An error occurred while deleting the book.");
+    }
+  }
+);
+
 export const addBookCopy = createAsyncThunk<
   BookCopyDTO | { status: string; bookId: number },
   number,
@@ -269,6 +303,27 @@ const booksSlice = createSlice({
         state.isAddingBook = false;
         state.booksError =
           (action.payload as string) ?? "Failed to add book.";
+      })
+
+      .addCase(updateBook.pending, (state) => {
+        state.booksError = null;
+      })
+      .addCase(updateBook.fulfilled, (state, action) => {
+        const updated = toBook(action.payload as BookDTO);
+        const index = state.books.findIndex((b) => b.id === updated.id);
+        if (index !== -1) {
+          state.books[index] = { ...state.books[index], ...updated };
+        }
+      })
+      .addCase(updateBook.rejected, (state, action) => {
+        state.booksError = (action.payload as string) ?? "Failed to update book.";
+      })
+
+      .addCase(deleteBook.fulfilled, (state, action) => {
+        state.books = state.books.filter((b) => b.id !== action.payload);
+      })
+      .addCase(deleteBook.rejected, (state, action) => {
+        state.booksError = (action.payload as string) ?? "Failed to delete book.";
       })
 
       .addCase(searchBooks.pending, (state) => {

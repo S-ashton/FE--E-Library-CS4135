@@ -121,19 +121,20 @@ export default function AddBookForm({
               className={styles.input}
             >
               <option value="">Select language</option>
-              <option value="English">English</option>
-              <option value="Spanish">Spanish</option>
-              <option value="French">French</option>
-              <option value="German">German</option>
-              <option value="Japanese">Japanese</option>
-              <option value="Italian">Italian</option>
-              <option value="Russian">Russian</option>
-              <option value="Portuguese">Portuguese</option>
-              <option value="Chinese">Chinese</option>
-              <option value="Arabic">Arabic</option>
-              <option value="Hindi">Hindi</option>
-              <option value="Bengali">Bengali</option>
-              <option value="Punjabi">Punjabi</option>
+              <option value="ENGLISH">English</option>
+              <option value="SPANISH">Spanish</option>
+              <option value="FRENCH">French</option>
+              <option value="GERMAN">German</option>
+              <option value="JAPANESE">Japanese</option>
+              <option value="ITALIAN">Italian</option>
+              <option value="RUSSIAN">Russian</option>
+              <option value="PORTUGESE">Portuguese</option>
+              <option value="CHINESE">Chinese</option>
+              <option value="ARABIC">Arabic</option>
+              <option value="HINDI">Hindi</option>
+              <option value="BENGALI">Bengali</option>
+              <option value="PUNJABI">Punjabi</option>
+              <option value="POLISH">Polish</option>
             </select>
             
           </div>

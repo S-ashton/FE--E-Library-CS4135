@@ -20,7 +20,7 @@ export const BOOK_SEARCH_LANGUAGES = [
   "HINDI",
   "ARABIC",
   "BENGALI",
-  "PORTUGUESE",
+  "PORTUGESE",
   "RUSSIAN",
   "JAPANESE",
   "PUNJABI",

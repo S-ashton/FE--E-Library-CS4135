@@ -30,6 +30,7 @@ type BookTableProps = {
   onSelectBook?: (book: Book) => void
   onAddCopy?: (book: Book) => void | Promise<void>
   addingCopyBookId?: number | null
+  onDeleteBook?: (book: Book) => void
 }
 
 function BookTable({
@@ -42,8 +43,10 @@ function BookTable({
   onSelectBook,
   onAddCopy,
   addingCopyBookId = null,
+  onDeleteBook,
 }: BookTableProps) {
   const showAddCopy = Boolean(onAddCopy)
+  const showDeleteBook = Boolean(onDeleteBook)
   const showCopyCounts = mode === 'admin'
   const countDisplay = state === 'loading' ? '…' : `${books.length} books`
 
@@ -117,6 +120,11 @@ function BookTable({
                     Add copy
                   </th>
                 ) : null}
+                {showDeleteBook ? (
+                  <th className={`${styles.headCell} ${styles.addCopyHeadCell}`}>
+                    Delete
+                  </th>
+                ) : null}
               </tr>
             </thead>
 
@@ -125,12 +133,12 @@ function BookTable({
                 <tr
                   key={book.id}
                   onClick={() => {
-                    if (mode === 'public' && onSelectBook) {
+                    if (onSelectBook) {
                       onSelectBook(book)
                     }
                   }}
-                  className={`${styles.row} ${mode === 'public' ? styles.clickableRow : ''}`}
-                  style={mode === 'admin' ? { cursor: 'default' } : undefined}
+                  className={`${styles.row} ${onSelectBook ? styles.clickableRow : ''}`}
+                  style={!onSelectBook ? { cursor: 'default' } : undefined}
                 >
                   <td className={styles.coverCell}>
                     <div className={styles.coverThumb}>
@@ -177,6 +185,21 @@ function BookTable({
                         onClick={() => void onAddCopy?.(book)}
                       >
                         +
+                      </button>
+                    </td>
+                  ) : null}
+                  {showDeleteBook ? (
+                    <td
+                      className={`${styles.cell} ${styles.addCopyCell}`}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <button
+                        type="button"
+                        className={styles.deleteBtn}
+                        aria-label={`Delete ${book.title}`}
+                        onClick={() => onDeleteBook?.(book)}
+                      >
+                        Delete
                       </button>
                     </td>
                   ) : null}

@@ -2,8 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import AddBookForm from "../../components/ui/AddBookForm/AddBookForm";
 import BookCatalogueSearchPanel from "../../components/ui/BookCatalogueSearchPanel/BookCatalogueSearchPanel";
 import BookTable from "../../components/ui/BookTable/BookTable";
+import DeleteCheck from "../../components/ui/deleteCheck/deleteCheck";
+import EditBookForm from "../../components/ui/EditBookForm/EditBookForm";
 import { useAddBook } from "../../hooks/useAddBook";
 import { useBookCatalogueSearch } from "../../hooks/useBookCatalogueSearch";
+import { useDeleteBook } from "../../hooks/useDeleteBooks";
 import { useManageBooks } from "../../hooks/useManageBooks";
 import { useSearchBooks } from "../../hooks/useSearchBooks";
 import { Book } from "../../types/book";
@@ -19,6 +22,8 @@ export default function ManagePage() {
   const {
     books,
     addBook,
+    editBook,
+    removeBook,
     refreshBooks,
     isLoadingBooks,
     booksError,
@@ -31,6 +36,21 @@ export default function ManagePage() {
     searchForBooks,
   });
 
+  const { bookToDelete, requestDelete, cancelDelete, confirmDelete } = useDeleteBook({
+    onDelete: async (bookId) => {
+      try {
+        await removeBook(Number(bookId));
+        showSuccess("Book deleted successfully!");
+      } catch (err) {
+        console.error("Failed to delete book:", err);
+        showError("Failed to delete book. Please try again.");
+      }
+    },
+  });
+
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+  const [isEditSubmitting, setIsEditSubmitting] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
   const [addingCopyBookId, setAddingCopyBookId] = useState<number | null>(null);
   const [copyAvailBump, setCopyAvailBump] = useState(0);
 
@@ -44,12 +64,16 @@ export default function ManagePage() {
   }, [refreshBooks]);
 
   const booksWithInventory = useMemo<Book[]>(() => {
-    return books.map((book) => {
+    const mapped = books.map((book) => {
       const probe = availabilityMap[book.id] ?? "loading";
       const status = bookInventoryStatusFromProbe(probe);
       return { ...book, status };
     });
-  }, [books, availabilityMap]);
+    if (!catalogueSearch.hasActiveSearch) {
+      mapped.sort((a, b) => a.title.localeCompare(b.title));
+    }
+    return mapped;
+  }, [books, availabilityMap, catalogueSearch.hasActiveSearch]);
 
   const booksTableState = resolveCatalogueBooksTableState({
     isLoadingBooks,
@@ -65,6 +89,43 @@ export default function ManagePage() {
     } catch {
     }
   }, [refreshBooks]);
+
+  const handleEditBook = useCallback(
+    async (fields: {
+      title: string;
+      author: string;
+      description: string;
+      category: string;
+      year: string;
+      language: string;
+      coverImage: File | null;
+    }) => {
+      if (!selectedBook) return;
+      setEditError(null);
+      setIsEditSubmitting(true);
+      try {
+        await editBook(selectedBook.id, {
+          title: fields.title.trim(),
+          author: fields.author.trim(),
+          description: fields.description.trim(),
+          category: fields.category.trim().toUpperCase(),
+          yearPublished: Number(fields.year),
+          language: fields.language.trim().toUpperCase(),
+          coverImage: fields.coverImage,
+        });
+        setSelectedBook(null);
+        await refreshBooks();
+        setCopyAvailBump((k) => k + 1);
+        showSuccess("Book updated successfully!");
+      } catch (err) {
+        console.error("Failed to update book:", err);
+        setEditError("Failed to update book. Please try again.");
+      } finally {
+        setIsEditSubmitting(false);
+      }
+    },
+    [selectedBook, editBook, refreshBooks, showSuccess]
+  );
 
   const handleAddCopy = useCallback(
     async (book: Book) => {
@@ -177,9 +238,29 @@ export default function ManagePage() {
               isSearching={isSearchingBooks}
             />
           }
+          onSelectBook={setSelectedBook}
           onAddCopy={handleAddCopy}
           addingCopyBookId={addingCopyBookId}
+          onDeleteBook={requestDelete}
         />
+
+        {selectedBook && (
+          <EditBookForm
+            book={selectedBook}
+            isSubmitting={isEditSubmitting}
+            error={editError}
+            onClose={() => { setSelectedBook(null); setEditError(null); }}
+            onSubmit={handleEditBook}
+          />
+        )}
+
+        {bookToDelete && (
+          <DeleteCheck
+            bookTitle={bookToDelete.title}
+            onConfirm={confirmDelete}
+            onCancel={cancelDelete}
+          />
+        )}
       </section>
 
       <section>

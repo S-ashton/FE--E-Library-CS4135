@@ -41,11 +41,15 @@ export default function CataloguePage() {
   }, [refreshHistory, refreshBooks]);
 
   const booksWithInventory = useMemo<Book[]>(() => {
-    return books.map((book) => ({
+    const mapped = books.map((book) => ({
       ...book,
       status: catalogueRowInventoryStatus(book, availabilityMap[book.id]),
     }));
-  }, [books, availabilityMap]);
+    if (!catalogueSearch.hasActiveSearch) {
+      mapped.sort((a, b) => a.title.localeCompare(b.title));
+    }
+    return mapped;
+  }, [books, availabilityMap, catalogueSearch.hasActiveSearch]);
 
   const handleBorrowBook = async (book: Book) => {
     try {

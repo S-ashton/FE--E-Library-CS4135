@@ -167,6 +167,23 @@
   cursor: not-allowed;
 }
 
+.deleteBtn {
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: 1px solid #fca5a5;
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.deleteBtn:hover {
+  background: #fee2e2;
+  border-color: #f87171;
+}
+
 .addCopyHeadCell {
   width: 88px;
   text-align: center;

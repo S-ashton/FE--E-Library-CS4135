@@ -107,7 +107,7 @@ describe('BookDetailsCard', () => {
       />
     )
     expect(
-      screen.getByRole('button', { name: /staff cannot borrow/i })
+      screen.getByRole('button', { name: /Borrow Disabled/i })
     ).toBeDisabled()
   })
 })
