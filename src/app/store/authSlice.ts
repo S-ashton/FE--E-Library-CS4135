@@ -139,6 +139,38 @@ export const logout = createAsyncThunk(
     }
 );
 
+export const updateUserEmail = createAsyncThunk(
+    'auth/updateUserEmail',
+    async (payload: { email: string }, { rejectWithValue }) => {
+        try {
+            const response = await apiClient.put<{ id: string; email: string; role: UserRole }>(
+                '/users/me/email',
+                payload
+            );
+            return response.data;
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err) && err.response?.data?.message) {
+                return rejectWithValue(err.response.data.message);
+            }
+            return rejectWithValue('Failed to update email. Please try again.');
+        }
+    }
+);
+
+export const updateUserPassword = createAsyncThunk(
+    'auth/updateUserPassword',
+    async (payload: { currentPassword: string; newPassword: string }, { rejectWithValue }) => {
+        try {
+            await apiClient.put('/users/me/password', payload);
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err) && err.response?.data?.message) {
+                return rejectWithValue(err.response.data.message);
+            }
+            return rejectWithValue('Failed to update password. Please try again.');
+        }
+    }
+);
+
 const authSlice = createSlice({
     name: 'auth', // this prefix is used in action type strings, e.g. 'auth/logout'
     initialState,
@@ -206,6 +238,14 @@ const authSlice = createSlice({
                 state.token = action.payload.token;
                 state.expiresAt = action.payload.expiresAt;
                 state.user = action.payload.user;
+            })
+
+            // When email is updated successfully, reflect the new email in the store
+            // so the navbar and any other consumers show the updated value immediately.
+            .addCase(updateUserEmail.fulfilled, (state, action) => {
+                if (state.user) {
+                    state.user.email = action.payload.email;
+                }
             })
 
             // --- logout lifecycle ---

@@ -5,9 +5,9 @@ import type { AppStore } from '../store/store';
 
 const apiClient = axios.create({
   baseURL: config.apiBaseUrl,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  //headers: {
+  //  'Content-Type': 'application/json',
+  //},
   // withCredentials: true tells the browser to include cookies on every request.
   // This is required for the HttpOnly refresh token cookie to be sent automatically
   // when calling /auth/refresh. Without this, the browser silently strips the cookie.

@@ -25,20 +25,21 @@ describe('Navbar', () => {
     expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument()
   })
 
-  it('shows manage and admin links for admin user', () => {
+  it('shows manage and admin links but not home for admin user', () => {
     renderWithProviders(<Navbar />, {
       preloadedState: {
         auth: {
           user: { id: '2', email: 'admin@test.com', role: 'ADMIN' },
           token: 'fake-token',
           restoringSession: false,
-          expiresAt: '' 
+          expiresAt: ''
         },
       },
-      route: '/dashboard',
+      route: '/admin',
     })
 
     expect(screen.getByRole('link', { name: 'Manage' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Admin' })).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Home' })).not.toBeInTheDocument()
   })
 })

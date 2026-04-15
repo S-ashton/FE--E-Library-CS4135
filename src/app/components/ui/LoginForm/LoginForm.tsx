@@ -1,125 +1,119 @@
 import Spinner from "../Spinner";
+import type { FormEvent } from "react";
+import styles from "./LoginForm.module.css";
 
 type LoginFormProps = {
   email: string;
   password: string;
   error?: string | null;
-  emailFieldError?: string;
-  passwordFieldErrors?: string[];
   isSubmitting?: boolean;
   onEmailChange: (value: string) => void;
   onPasswordChange: (value: string) => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  onTrySignInAgain?: () => void;
+  onChooseRegister?: () => void;
 };
 
 export default function LoginForm({
   email,
   password,
   error,
-  emailFieldError = "",
-  passwordFieldErrors = [],
   isSubmitting = false,
   onEmailChange,
   onPasswordChange,
   onSubmit,
+  onTrySignInAgain,
+  onChooseRegister,
 }: LoginFormProps) {
+  const showRecovery =
+    Boolean(error) && (onTrySignInAgain || onChooseRegister);
+
   return (
-    <form onSubmit={onSubmit} style={{ display: "grid", gap: "16px" }}>
-      {error && (
-        <div
-          style={{
-            color: "#dc2626",
-            background: "#fef2f2",
-            border: "1px solid #fecaca",
-            borderRadius: "10px",
-            padding: "10px 12px",
-            fontSize: "0.95rem",
-          }}
-        >
-          {error}
-        </div>
+    <form onSubmit={onSubmit} className={styles.form}>
+      {error && <div className={styles.errorBox}>{error}</div>}
+
+      {showRecovery && (
+        <p className={styles.recoveryHint}>
+          If you already have an account, check your email and password.{" "}
+          {onTrySignInAgain && (
+            <button
+              type="button"
+              className={styles.linkButton}
+              onClick={onTrySignInAgain}
+            >
+              Try signing in again
+            </button>
+          )}
+          {onTrySignInAgain && onChooseRegister && (
+            <span className={styles.recoverySep}> · </span>
+          )}
+          {onChooseRegister && (
+            <button
+              type="button"
+              className={styles.linkButton}
+              onClick={onChooseRegister}
+            >
+              Create an account
+            </button>
+          )}
+        </p>
       )}
 
-      <div style={{ display: "grid", gap: "6px" }}>
-        <label htmlFor="email" style={{ fontWeight: 600 }}>
+      <div className={styles.field}>
+        <label htmlFor="login-email" className={styles.label}>
           Email
         </label>
         <input
-          id="email"
+          id="login-email"
           type="email"
           value={email}
           onChange={(e) => onEmailChange(e.target.value)}
           placeholder="Enter your email"
           autoComplete="email"
           disabled={isSubmitting}
-          required
-          style={{
-            width: "100%",
-            padding: "12px 14px",
-            border: "1px solid #cbd5e1",
-            borderRadius: "10px",
-            background: "#ffffff",
-            color: "#0f172a",
-          }}
+          className={styles.input}
         />
-        {emailFieldError && (
-          <span style={{ color: "#dc2626", fontSize: "0.95rem" }}>
-            {emailFieldError}
-          </span>
-        )}
       </div>
 
-      <div style={{ display: "grid", gap: "6px" }}>
-        <label htmlFor="password" style={{ fontWeight: 600 }}>
+      <div className={styles.field}>
+        <label htmlFor="login-password" className={styles.label}>
           Password
         </label>
         <input
-          id="password"
+          id="login-password"
           type="password"
           value={password}
           onChange={(e) => onPasswordChange(e.target.value)}
           placeholder="Enter your password"
           autoComplete="current-password"
           disabled={isSubmitting}
-          required
-          style={{
-            width: "100%",
-            padding: "12px 14px",
-            border: "1px solid #cbd5e1",
-            borderRadius: "10px",
-            background: "#ffffff",
-            color: "#0f172a",
-          }}
+          className={styles.input}
         />
-        {passwordFieldErrors.length > 0 && (
-          <ul style={{ margin: 0, paddingLeft: "18px", color: "#dc2626" }}>
-            {passwordFieldErrors.map((err) => (
-              <li key={err}>{err}</li>
-            ))}
-          </ul>
-        )}
       </div>
 
       <button
         type="submit"
         disabled={isSubmitting}
-        style={{
-          border: "none",
-          borderRadius: "10px",
-          padding: "12px 16px",
-          background: isSubmitting ? "#93c5fd" : "#2563eb",
-          color: "#ffffff",
-          fontWeight: 600,
-          display: "inline-flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "8px",
-          cursor: isSubmitting ? "not-allowed" : "pointer",
-        }}
+        className={`${styles.submitButton} ${
+          isSubmitting ? styles.submitButtonDisabled : ""
+        }`}
       >
         {isSubmitting && <Spinner size={16} />}
         {isSubmitting ? "Signing in..." : "Sign in"}
       </button>
+
+      {!error && onChooseRegister && (
+        <p className={styles.footerHint}>
+          New here?{" "}
+          <button
+            type="button"
+            className={styles.linkButton}
+            onClick={onChooseRegister}
+          >
+            Create an account
+          </button>
+        </p>
+      )}
     </form>
   );
 }

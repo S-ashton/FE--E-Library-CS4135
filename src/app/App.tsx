@@ -14,7 +14,7 @@ function App() {
     // access token from the HttpOnly cookie. If the cookie is valid the user is
     // restored silently. If not, token stays null and ProtectedRoute redirects to /login.
     dispatch(restoreSession());
-  }, []);
+  }, [dispatch]);
 
   if (restoringSession) {
     return <FullPageLoader message="Loading..." />;
