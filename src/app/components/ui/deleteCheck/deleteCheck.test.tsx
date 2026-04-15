@@ -14,7 +14,7 @@ describe('DeleteCheck', () => {
     )
 
     expect(
-      screen.getByText(/delete this book from the library/i)
+      screen.getByText(/delete this item/i)
     ).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: /cancel/i }))

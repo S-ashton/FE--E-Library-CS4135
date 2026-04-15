@@ -107,7 +107,6 @@ export default function HomePage() {
       if (fromCatalogue) {
         return {
           bookId: r.bookId,
-          score: r.score,
           title: fromCatalogue.title,
           author: fromCatalogue.author,
           coverImageUrl: fromCatalogue.coverImageUrl,
@@ -118,7 +117,6 @@ export default function HomePage() {
       if (fetched) {
         return {
           bookId: r.bookId,
-          score: r.score,
           title: fetched.title,
           author: fetched.author,
           coverImageUrl: fetched.coverImageUrl,

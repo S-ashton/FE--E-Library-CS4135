@@ -62,6 +62,10 @@
   transform: translateY(-1px);
 }
 
+.nav-link-active {
+  font-weight: 700;
+}
+
 .nav-brand {
   font-weight: 700;
   font-size: 1.1rem;

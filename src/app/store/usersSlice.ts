@@ -72,6 +72,64 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+export const deleteUserAdminAction = createAsyncThunk(
+  "users/deleteUserAdminAction",
+  async (userId: number, { rejectWithValue }) => {
+    try {
+      await apiClient.delete(`/users/${userId}`);
+      // Return the ID so the fulfilled case can remove the user from state.
+      return userId;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
+        return rejectWithValue(err.response.data.message);
+      }
+      return rejectWithValue("Failed to delete user. Please try again.");
+    }
+  }
+);
+
+export const updateUserRoleAdminAction = createAsyncThunk(
+  "users/updateUserRoleAdminAction",
+  async (
+    payload: { userId: number; role: UserRole },
+    { rejectWithValue }
+  ) => {
+    try {
+      await apiClient.put(`/users/${payload.userId}/role`, {
+        role: payload.role,
+      });
+      // Return the payload so the fulfilled case can update the user in state.
+      return payload;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
+        return rejectWithValue(err.response.data.message);
+      }
+      return rejectWithValue("Failed to update user role. Please try again.");
+    }
+  }
+);
+
+export const updateUserEmailAdminAction = createAsyncThunk(
+  "users/updateUserEmailAdminAction",
+  async (
+    payload: { userId: number; email: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      await apiClient.put(`/users/${payload.userId}/email`, {
+        email: payload.email,
+      });
+      // Return the payload so the fulfilled case can update the user in state.
+      return payload;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
+        return rejectWithValue(err.response.data.message);
+      }
+      return rejectWithValue("Failed to update user email. Please try again.");
+    }
+  }
+);
+
 const usersSlice = createSlice({
   name: "users",
   initialState,
@@ -102,7 +160,28 @@ const usersSlice = createSlice({
       .addCase(registerUser.rejected, (state, action) => {
         state.isAddingUser = false;
         state.error = (action.payload as string) ?? "Failed to add user.";
-        });
+        })
+
+      // Remove the deleted user from the array so the table updates immediately.
+      .addCase(deleteUserAdminAction.fulfilled, (state, action) => {
+        state.users = state.users.filter((u) => u.id !== action.payload);
+      })
+
+      // Update the user's role in the array so the table reflects the change.
+      .addCase(updateUserRoleAdminAction.fulfilled, (state, action) => {
+        const user = state.users.find((u) => u.id === action.payload.userId);
+        if (user) {
+          user.role = action.payload.role;
+        }
+      })
+
+      // Update the user's email in the array so the table reflects the change.
+      .addCase(updateUserEmailAdminAction.fulfilled, (state, action) => {
+        const user = state.users.find((u) => u.id === action.payload.userId);
+        if (user) {
+          user.email = action.payload.email;
+        }
+      });
   },
 });
 

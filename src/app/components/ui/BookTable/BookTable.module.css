@@ -78,6 +78,11 @@
 
 .clickableRow {
   cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.clickableRow:hover {
+  background-color: #f8fafc;
 }
 
 .cell {

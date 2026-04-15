@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, NavLink } from 'react-router-dom';
 import type { AppDispatch, RootState } from '../../../store/store';
 import { logout } from '../../../store/authSlice';
 import './NavBar.css';
@@ -23,22 +23,23 @@ function Navbar() {
 
         <div className="nav-links-group">
           {user?.role === 'USER' && (
-            <Link to="/dashboard" className="nav-link">Home</Link>
+            <NavLink to="/dashboard" className={({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`}>Home</NavLink>
           )}
-          <Link to="/catalogue" className="nav-link">Catalogue</Link>
-          <Link to="/settings" className="nav-link">Account</Link>
+          <NavLink to="/catalogue" className={({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`}>Catalogue</NavLink>
 
           {(user?.role === 'STAFF' || user?.role === 'ADMIN') && (
-            <Link to="/manage" className="nav-link">Manage</Link>
+            <NavLink to="/manage" className={({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`}>Manage</NavLink>
           )}
 
           {(user?.role === 'STAFF' || user?.role === 'ADMIN') && (
-            <Link to="/loans" className="nav-link">Loans</Link>
+            <NavLink to="/loans" className={({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`}>Loans</NavLink>
           )}
 
           {user?.role === 'ADMIN' && (
-            <Link to="/admin" className="nav-link">Admin</Link>
+            <NavLink to="/admin" className={({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`}>Admin</NavLink>
           )}
+
+          <NavLink to="/settings" className={({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`}>Account</NavLink>
         </div>
 
         <div className="nav-user-group">
