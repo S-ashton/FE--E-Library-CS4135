@@ -216,8 +216,9 @@ export const deleteBook = createAsyncThunk(
       await apiClient.delete(`/books/${bookId}`);
       return bookId;
     } catch (err: unknown) {
-      if (axios.isAxiosError(err) && err.response?.data?.message) {
-        return rejectWithValue(err.response.data.message);
+      if (axios.isAxiosError(err)) {
+        const msg = err.response?.data?.message ?? err.response?.data?.error;
+        if (msg) return rejectWithValue(String(msg));
       }
       return rejectWithValue("An error occurred while deleting the book.");
     }
@@ -321,9 +322,6 @@ const booksSlice = createSlice({
 
       .addCase(deleteBook.fulfilled, (state, action) => {
         state.books = state.books.filter((b) => b.id !== action.payload);
-      })
-      .addCase(deleteBook.rejected, (state, action) => {
-        state.booksError = (action.payload as string) ?? "Failed to delete book.";
       })
 
       .addCase(searchBooks.pending, (state) => {

@@ -43,7 +43,8 @@ export default function ManagePage() {
         showSuccess("Book deleted successfully!");
       } catch (err) {
         console.error("Failed to delete book:", err);
-        showError("Failed to delete book. Please try again.");
+        const message = typeof err === "string" ? err : "Failed to delete book. Please try again.";
+        showError(message);
       }
     },
   });
