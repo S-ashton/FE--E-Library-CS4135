@@ -11,7 +11,7 @@ import { useToast } from "../../hooks/useToast";
 import { useRecommendations } from "../../hooks/useRecommendations";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { getBookDetails } from "../../store/bookSlice";
-import { useBookCopyAvailability } from "../../hooks/useBookCopyAvailability";
+import type { CopyAvailability } from "../../types/copyAvailability";
 import { resolveCatalogueTitleId } from "../../utils/loanCopyIdStorage";
 
 export default function HomePage() {
@@ -20,11 +20,9 @@ export default function HomePage() {
   const { requestLoan, isBorrowing } = useRequestLoan();
   const { returnBookLoan, isReturning } = useReturnBook();
   const { books, refreshBooks } = useManageBooks();
-  const [probeRefresh, setProbeRefresh] = useState(0);
-
-  const availabilityMap = useBookCopyAvailability(
-    books.map((b) => b.id),
-    probeRefresh
+  const availabilityMap = useMemo<Record<number, CopyAvailability>>(
+    () => Object.fromEntries(books.map((b) => [b.id, (b.copiesAvailable ?? 0) > 0 ? "available" : "all_borrowed"] as const)),
+    [books]
   );
   const user = useAppSelector((state) => state.auth.user);
   const recommendationsEnabled = Boolean(user);
@@ -172,7 +170,6 @@ export default function HomePage() {
   const handleReturnBook = async (loanId: string): Promise<void> => {
     try {
       await returnBookLoan(loanId);
-      setProbeRefresh((k) => k + 1);
       await Promise.all([refreshHistory(), refreshBooks()]);
       showSuccess("Book returned successfully!");
     } catch (err) {
@@ -185,7 +182,6 @@ export default function HomePage() {
     try {
       await requestLoan(book.id.toString());
       setSelectedBook(null);
-      setProbeRefresh((k) => k + 1);
       await Promise.all([refreshHistory(), refreshBooks()]);
       showSuccess("Book borrowed successfully!");
     } catch (err) {

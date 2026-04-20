@@ -13,7 +13,7 @@ import { Book } from "../../types/book";
 import { useToast } from "../../hooks/useToast";
 import { resolveCatalogueBooksTableState } from "../../utils/bookSearchFilterHelpers";
 import { bookInventoryStatusFromProbe } from "../../utils/bookInventoryStatusFromProbe";
-import { useBookCopyAvailability } from "../../hooks/useBookCopyAvailability";
+import type { CopyAvailability } from "../../types/copyAvailability";
 import { useAppDispatch } from "../../hooks/reduxHooks";
 import { addBookCopy } from "../../store/bookSlice";
 
@@ -53,11 +53,9 @@ export default function ManagePage() {
   const [isEditSubmitting, setIsEditSubmitting] = useState(false);
   const [editError, setEditError] = useState<string | null>(null);
   const [addingCopyBookId, setAddingCopyBookId] = useState<number | null>(null);
-  const [copyAvailBump, setCopyAvailBump] = useState(0);
-
-  const availabilityMap = useBookCopyAvailability(
-    books.map((b) => b.id),
-    copyAvailBump
+  const availabilityMap = useMemo<Record<number, CopyAvailability>>(
+    () => Object.fromEntries(books.map((b) => [b.id, (b.copiesAvailable ?? 0) > 0 ? "available" : "all_borrowed"] as const)),
+    [books]
   );
 
   useEffect(() => {
@@ -86,7 +84,6 @@ export default function ManagePage() {
   const refreshCatalogueAfterError = useCallback(async () => {
     try {
       await refreshBooks();
-      setCopyAvailBump((k) => k + 1);
     } catch {
     }
   }, [refreshBooks]);
@@ -116,7 +113,6 @@ export default function ManagePage() {
         });
         setSelectedBook(null);
         await refreshBooks();
-        setCopyAvailBump((k) => k + 1);
         showSuccess("Book updated successfully!");
       } catch (err) {
         console.error("Failed to update book:", err);
@@ -134,7 +130,6 @@ export default function ManagePage() {
       try {
         await dispatch(addBookCopy(book.id)).unwrap();
         await refreshBooks();
-        setCopyAvailBump((k) => k + 1);
         showSuccess("Copy added to the catalogue.");
       } catch (err) {
         console.error("Failed to add copy:", err);
@@ -170,7 +165,6 @@ export default function ManagePage() {
       try {
         await addBook(book);
         await refreshBooks();
-        setCopyAvailBump((k) => k + 1);
         showSuccess("Book added successfully!");
       } catch (err) {
         console.error("Failed to add book:", err);
