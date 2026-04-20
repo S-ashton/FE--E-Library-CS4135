@@ -90,7 +90,6 @@ function LoginPage() {
         registerUser({
           email: email.trim(),
           password,
-          role: "USER",
         })
       ).unwrap();
       await dispatch(login({ email: email.trim(), password })).unwrap();

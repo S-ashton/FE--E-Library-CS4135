@@ -45,7 +45,7 @@ export default function CataloguePage() {
       ...book,
       status: catalogueRowInventoryStatus(book, availabilityMap[book.id]),
     }));
-    if (!catalogueSearch.hasActiveSearch) {
+    if (!catalogueSearch.searchQuery.trim()) {
       mapped.sort((a, b) => a.title.localeCompare(b.title));
     }
     return mapped;

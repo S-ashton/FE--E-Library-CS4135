@@ -1,11 +1,9 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import type { UserRole } from "../store/authSlice";
 
 type AddUserInput = {
   email: string;
   password: string;
-  role: UserRole;
 };
 
 type UseAddUserParams = {
@@ -15,7 +13,6 @@ type UseAddUserParams = {
 export function useAddUser({ onAddUser }: UseAddUserParams) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<UserRole | "">("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -23,7 +20,7 @@ export function useAddUser({ onAddUser }: UseAddUserParams) {
     e.preventDefault();
     setError(null);
 
-    if (!email.trim() || !password.trim() || !role) {
+    if (!email.trim() || !password.trim()) {
       setError("Please fill in all required fields.");
       return;
     }
@@ -34,16 +31,14 @@ export function useAddUser({ onAddUser }: UseAddUserParams) {
       await onAddUser({
         email: email.trim(),
         password: password.trim(),
-        role,
       });
 
       setEmail("");
       setPassword("");
-      setRole("");
     } catch (err: unknown) {
       if (typeof err === "string") {
         setError(err);
-        } else {
+      } else {
         setError("Failed to add user.");
       }
     } finally {
@@ -54,12 +49,10 @@ export function useAddUser({ onAddUser }: UseAddUserParams) {
   return {
     email,
     password,
-    role,
     error,
     isSubmitting,
     setEmail,
     setPassword,
-    setRole,
     handleSubmit,
   };
 }

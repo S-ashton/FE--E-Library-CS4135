@@ -219,6 +219,28 @@ export default function ManagePage() {
       </section>
 
       <section>
+        <AddBookForm
+          bookTitle={title}
+          bookAuthor={author}
+          bookDescription={description}
+          bookGenre={category}
+          bookYear={year}
+          bookLanguage={language}
+          bookCoverImage={coverImage}
+          error={error}
+          isSubmitting={isSubmitting}
+          onTitleChange={setTitle}
+          onAuthorChange={setAuthor}
+          onDescriptionChange={setDescription}
+          onGenreChange={setCategory}
+          onYearChange={setYear}
+          onLanguageChange={setLanguage}
+          onCoverImageChange={setCoverImage}
+          onSubmit={handleSubmit}
+        />
+      </section>
+
+      <section>
         <BookTable
           title="Library Catalogue"
           books={booksWithInventory}
@@ -262,28 +284,6 @@ export default function ManagePage() {
             onCancel={cancelDelete}
           />
         )}
-      </section>
-
-      <section>
-        <AddBookForm
-          bookTitle={title}
-          bookAuthor={author}
-          bookDescription={description}
-          bookGenre={category}
-          bookYear={year}
-          bookLanguage={language}
-          bookCoverImage={coverImage}
-          error={error}
-          isSubmitting={isSubmitting}
-          onTitleChange={setTitle}
-          onAuthorChange={setAuthor}
-          onDescriptionChange={setDescription}
-          onGenreChange={setCategory}
-          onYearChange={setYear}
-          onLanguageChange={setLanguage}
-          onCoverImageChange={setCoverImage}
-          onSubmit={handleSubmit}
-        />
       </section>
     </div>
   );

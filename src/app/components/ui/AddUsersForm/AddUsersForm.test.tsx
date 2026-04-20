@@ -9,10 +9,8 @@ describe('AddUserForm', () => {
       <AddUserForm
         userEmail=""
         userPassword=""
-        userRole=""
         onEmailChange={() => {}}
         onPasswordChange={() => {}}
-        onRoleChange={() => {}}
         onSubmit={(e) => e.preventDefault()}
       />
     )
@@ -20,6 +18,7 @@ describe('AddUserForm', () => {
     expect(screen.getByRole('heading', { name: /add new user/i })).toBeInTheDocument()
     expect(screen.getByLabelText(/user email/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /add user/i })).toBeInTheDocument()
+    expect(screen.queryByLabelText(/role/i)).not.toBeInTheDocument()
   })
 
   it('calls change handlers when typing', async () => {
@@ -29,10 +28,8 @@ describe('AddUserForm', () => {
       <AddUserForm
         userEmail=""
         userPassword=""
-        userRole=""
         onEmailChange={onEmailChange}
         onPasswordChange={() => {}}
-        onRoleChange={() => {}}
         onSubmit={(e) => e.preventDefault()}
       />
     )
