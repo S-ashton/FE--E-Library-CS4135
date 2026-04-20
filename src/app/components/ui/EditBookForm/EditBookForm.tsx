@@ -74,7 +74,7 @@ export default function EditBookForm({
           </button>
         </div>
 
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <form className={styles.form} onSubmit={handleSubmit} noValidate>
           {(error || validationError) && (
             <div className={styles.errorBox}>{error ?? validationError}</div>
           )}

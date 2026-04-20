@@ -77,6 +77,11 @@
 
 .clickableRow {
   cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.clickableRow:hover {
+  background-color: #f8fafc;
 }
 
 .cell {
@@ -153,11 +158,20 @@
 }
 
 .deleteButton {
-  border: none;
-  background: transparent;
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: 1px solid #fca5a5;
+  background: #fef2f2;
   color: #dc2626;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
+}
+
+.deleteButton:hover {
+  background: #fee2e2;
+  border-color: #f87171;
 }
 
 @media (max-width: 768px) {

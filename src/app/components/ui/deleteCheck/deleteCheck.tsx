@@ -2,15 +2,22 @@ import styles from "./DeleteCheck.module.css";
 
 type DeleteCheckProps = {
   bookTitle?: string;
+  message?: string;
   onConfirm: () => void;
   onCancel: () => void;
 };
 
 export default function DeleteCheck({
   bookTitle,
+  message,
   onConfirm,
   onCancel,
 }: DeleteCheckProps) {
+  const displayMessage =
+    message ??
+    (bookTitle
+      ? `Do you want to delete "${bookTitle}" from the library?`
+      : "Do you want to delete this item?");
 
   return (
     <div className={styles.overlay} onClick={onCancel}>
@@ -21,11 +28,7 @@ export default function DeleteCheck({
         <div className={styles.header}>
           <h2 className={styles.title}>Are you sure?</h2>
 
-          <p className={styles.message}>
-            {bookTitle
-              ? `Do you want to delete "${bookTitle}" from the library?`
-              : "Do you want to delete this book from the library?"}
-          </p>
+          <p className={styles.message}>{displayMessage}</p>
         </div>
 
         <div className={styles.actions}>
