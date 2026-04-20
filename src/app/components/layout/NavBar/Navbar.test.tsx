@@ -11,7 +11,7 @@ describe('Navbar', () => {
           user: { id: '1', email: 'user@test.com', role: 'USER' },
           token: 'fake-token',
           restoringSession: false,
-          expiresAt: '' 
+          expiresAt: ''
         },
       },
       route: '/dashboard',
@@ -21,11 +21,14 @@ describe('Navbar', () => {
     expect(screen.getByText(/user@test.com/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /logout/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Home' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Catalogue' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Account' })).toBeInTheDocument()
     expect(screen.queryByRole('link', { name: 'Manage' })).not.toBeInTheDocument()
     expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Loans' })).not.toBeInTheDocument()
   })
 
-  it('shows manage and admin links but not home for admin user', () => {
+  it('shows manage, loans, and admin links but not home for admin user', () => {
     renderWithProviders(<Navbar />, {
       preloadedState: {
         auth: {
@@ -39,7 +42,49 @@ describe('Navbar', () => {
     })
 
     expect(screen.getByRole('link', { name: 'Manage' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Loans' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Admin' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Catalogue' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Account' })).toBeInTheDocument()
     expect(screen.queryByRole('link', { name: 'Home' })).not.toBeInTheDocument()
+  })
+
+  it('shows manage and loans links but not admin for staff user', () => {
+    renderWithProviders(<Navbar />, {
+      preloadedState: {
+        auth: {
+          user: { id: '3', email: 'staff@test.com', role: 'STAFF' },
+          token: 'fake-token',
+          restoringSession: false,
+          expiresAt: ''
+        },
+      },
+      route: '/manage',
+    })
+
+    expect(screen.getByRole('link', { name: 'Manage' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Loans' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Catalogue' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Account' })).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Home' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument()
+  })
+
+  it('applies active class to the current route link', () => {
+    renderWithProviders(<Navbar />, {
+      preloadedState: {
+        auth: {
+          user: { id: '1', email: 'user@test.com', role: 'USER' },
+          token: 'fake-token',
+          restoringSession: false,
+          expiresAt: ''
+        },
+      },
+      route: '/catalogue',
+    })
+
+    expect(screen.getByRole('link', { name: 'Catalogue' })).toHaveClass('nav-link-active')
+    expect(screen.getByRole('link', { name: 'Home' })).not.toHaveClass('nav-link-active')
+    expect(screen.getByRole('link', { name: 'Account' })).not.toHaveClass('nav-link-active')
   })
 })

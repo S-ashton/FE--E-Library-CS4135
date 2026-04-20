@@ -2,7 +2,6 @@ import styles from "./RecDashboard.module.css";
 
 export type RecDashboardItem = {
   bookId: number;
-  score: number;
   title: string;
   author?: string;
   coverImageUrl?: string;
@@ -21,11 +20,6 @@ type RecDashboardProps = {
   recommendations?: RecDashboardItem[];
   lastUpdatedLabel?: string;
 };
-
-function formatScore(score: number): string {
-  if (!Number.isFinite(score)) return "—";
-  return Number.isInteger(score) ? String(score) : score.toFixed(2);
-}
 
 export default function RecDashboard({
   title = "Recommendations Dashboard",
@@ -124,9 +118,6 @@ export default function RecDashboard({
                         ) : null}
                       </>
                     )}
-                    <p className={styles.score}>
-                      Score: {formatScore(item.score)}
-                    </p>
                   </div>
                 </div>
 
