@@ -44,7 +44,7 @@ export const fetchUsers = createAsyncThunk(
 export const registerUser = createAsyncThunk(
   "users/registerUser",
   async (
-    userData: { email: string; password: string; role: UserRole },
+    userData: { email: string; password: string },
     { rejectWithValue }
   ) => {
     try {

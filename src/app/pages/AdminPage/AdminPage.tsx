@@ -33,12 +33,10 @@ export default function AdminPage() {
   const {
     email,
     password,
-    role,
     error: addUserError,
     isSubmitting,
     setEmail,
     setPassword,
-    setRole,
     handleSubmit,
   } = useAddUser({
     onAddUser: async (userData) => {
@@ -173,12 +171,10 @@ export default function AdminPage() {
       <AddUserForm
         userEmail={email}
         userPassword={password}
-        userRole={role}
         error={addUserError}
         isSubmitting={isSubmitting || isAddingUser}
         onEmailChange={setEmail}
         onPasswordChange={setPassword}
-        onRoleChange={setRole}
         onSubmit={handleSubmit}
       />
     </div>

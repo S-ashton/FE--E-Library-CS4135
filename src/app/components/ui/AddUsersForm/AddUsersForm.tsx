@@ -1,29 +1,23 @@
 import type { FormEvent } from "react";
 import styles from "./AddUserForm.module.css";
 
-export type UserRole = "USER" | "STAFF" | "ADMIN";
-
 type AddUserFormProps = {
   userEmail: string;
   userPassword: string;
-  userRole: UserRole | "";
   error?: string | null;
   isSubmitting?: boolean;
   onEmailChange: (value: string) => void;
   onPasswordChange: (value: string) => void;
-  onRoleChange: (value: UserRole | "") => void;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
 };
 
 export default function AddUserForm({
   userEmail,
   userPassword,
-  userRole,
   error,
   isSubmitting = false,
   onEmailChange,
   onPasswordChange,
-  onRoleChange,
   onSubmit,
 }: AddUserFormProps) {
   return (
@@ -32,7 +26,7 @@ export default function AddUserForm({
         <h2 className={styles.heading}>Add New User</h2>
 
         <p className={styles.subheading}>
-          Create a new user account and assign a role.
+          Create a new user account. The account will be created with the USER role — you can change it from the users table.
         </p>
       </div>
 
@@ -70,23 +64,6 @@ export default function AddUserForm({
             />
           </div>
 
-          <div className={styles.field}>
-            <label htmlFor="userRole" className={styles.label}>
-              Role
-            </label>
-            <select
-              id="userRole"
-              value={userRole}
-              onChange={(e) => onRoleChange(e.target.value as UserRole | "")}
-              disabled={isSubmitting}
-              className={styles.select}
-            >
-              <option value="">Select a role</option>
-              <option value="USER">USER</option>
-              <option value="STAFF">STAFF</option>
-              <option value="ADMIN">ADMIN</option>
-            </select>
-          </div>
         </div>
 
         <button

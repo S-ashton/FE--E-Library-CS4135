@@ -12,7 +12,7 @@ import { useRequestLoan } from "../../hooks/useRequestLoan";
 import { useToast } from "../../hooks/useToast";
 import { resolveCatalogueBooksTableState } from "../../utils/bookSearchFilterHelpers";
 import { catalogueRowInventoryStatus } from "../../utils/bookInventoryStatusFromProbe";
-import { useBookCopyAvailability } from "../../hooks/useBookCopyAvailability";
+import type { CopyAvailability } from "../../types/copyAvailability";
 import { resolveCatalogueTitleId } from "../../utils/loanCopyIdStorage";
 import type { RootState } from "../../store/store";
 
@@ -29,11 +29,9 @@ export default function CataloguePage() {
   });
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const { showSuccess, showError } = useToast();
-  const [probeRefresh, setProbeRefresh] = useState(0);
-
-  const availabilityMap = useBookCopyAvailability(
-    books.map((b) => b.id),
-    probeRefresh
+  const availabilityMap = useMemo<Record<number, CopyAvailability>>(
+    () => Object.fromEntries(books.map((b) => [b.id, (b.copiesAvailable ?? 0) > 0 ? "available" : "all_borrowed"] as const)),
+    [books]
   );
 
   useEffect(() => {
@@ -45,18 +43,17 @@ export default function CataloguePage() {
       ...book,
       status: catalogueRowInventoryStatus(book, availabilityMap[book.id]),
     }));
-    if (!catalogueSearch.hasActiveSearch) {
+    if (!catalogueSearch.searchQuery.trim()) {
       mapped.sort((a, b) => a.title.localeCompare(b.title));
     }
     return mapped;
-  }, [books, availabilityMap, catalogueSearch.hasActiveSearch]);
+  }, [books, availabilityMap, catalogueSearch.searchQuery]);
 
   const handleBorrowBook = async (book: Book) => {
     try {
       await requestLoan(book.id.toString());
       setSelectedBook(null);
       showSuccess("Book borrowed successfully!");
-      setProbeRefresh((k) => k + 1);
       await refreshHistory();
       await refreshBooks();
     } catch (err) {
