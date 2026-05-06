@@ -1,6 +1,21 @@
 # E-Library (frontend)
 
+[![Frontend CI](https://github.com/S-ashton/FE--E-Library-CS4135/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/S-ashton/FE--E-Library-CS4135/actions/workflows/frontend-ci.yml)
+
 Course project frontend for an **e-library**: browse books, borrow and return copies, see active and overdue loans, and view personalised recommendations. Staff can manage catalogue entries from a dedicated area.
+
+## Frontend Architecture & Setup
+
+This frontend is hosted on **Netlify** and built with **Vite + React + TypeScript**.  
+State is managed with **Redux Toolkit**, and routing uses **React Router** with:
+- `ProtectedRoute` for authenticated-only pages
+- `RoleRoute` for role-based access (`USER`, `STAFF`, `ADMIN`)
+
+### Production API
+
+The frontend talks to the backend API gateway at:
+
+`VITE_API_BASE_URL=https://e-library.duckdns.org/api`
 
 ## Stack
 
@@ -30,6 +45,11 @@ cd FE--E-Library-CS4135
 
 ### 2. Create the environment file
 
+### For live deployment 
+Create `.env.development` in the project root:
+`VITE_API_BASE_URL=https://e-library.duckdns.org/api`
+
+### For running locally 
 Create a file called `.env.development` in the project root:
 
 ```
