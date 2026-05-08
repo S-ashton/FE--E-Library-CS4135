@@ -1,6 +1,25 @@
 # E-Library (frontend)
 
+[![Frontend CI](https://github.com/S-ashton/FE--E-Library-CS4135/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/S-ashton/FE--E-Library-CS4135/actions/workflows/frontend-ci.yml)
+
 Course project frontend for an **e-library**: browse books, borrow and return copies, see active and overdue loans, and view personalised recommendations. Staff can manage catalogue entries from a dedicated area.
+
+## Frontend Architecture & Setup
+
+This frontend is hosted on **Netlify** and built with **Vite + React + TypeScript**.  
+State is managed with **Redux Toolkit**, and routing uses **React Router** with:
+- `ProtectedRoute` for authenticated-only pages
+- `RoleRoute` for role-based access (`USER`, `STAFF`, `ADMIN`)
+
+### Production API
+
+The frontend talks to the backend API gateway at:
+
+`VITE_API_BASE_URL=https://e-library.duckdns.org/api`
+
+#### For Production Deployment 
+Set the Netlify site environment variable:
+`VITE_API_BASE_URL=https://e-library.duckdns.org/api`
 
 ## Stack
 
@@ -30,6 +49,7 @@ cd FE--E-Library-CS4135
 
 ### 2. Create the environment file
 
+### For running locally 
 Create a file called `.env.development` in the project root:
 
 ```
@@ -82,6 +102,28 @@ docker run -p 3000:80 e-library-fe
 ```
 
 The app will be available at `http://localhost:3000`. The `VITE_API_BASE_URL` build arg is baked into the bundle at build time, so it must point to a URL that is reachable from the **browser**, not just from inside the container.
+
+---
+
+## Deployment
+
+### Frontend deployment
+
+The frontend is hosted on Netlify as a Vite production build of this React app.
+
+Production frontend environment value:
+`VITE_API_BASE_URL=https://e-library.duckdns.org/api`
+
+Public frontend URL:
+`https://e-library-13.netlify.app/login`
+
+The frontend and backend are deployed separately. Browsers load static frontend assets from Netlify, then call the backend via the DuckDNS HTTPS API endpoint through the API Gateway.
+
+### Deployment security
+
+- Frontend is served over HTTPS by Netlify.
+- Refresh tokens are stored in HttpOnly cookies and should use `Secure` in production.
+- Production secrets should be provided through environment variables and never committed.
 
 ---
 
